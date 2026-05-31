@@ -1,31 +1,24 @@
 {
-  "name": "Plant Steam Boiler Widget",
-  "short_name": "BoilerWidget",
+  "name": "ABN Plant Steam Monitor",
+  "short_name": "ABN Steam",
+  "description": "Industrial Automated Boiler and CSG Monitoring System",
   "start_url": "index.html",
   "display": "standalone",
   "background_color": "#020617",
-  "theme_color": "#020617",
+  "theme_color": "#06b6d4",
+  "orientation": "portrait-primary",
   "icons": [
     {
-      "src": "https://cdn-icons-png.flaticon.com/512/3409/3409140.png",
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
-    }
-  ],
-  "widgets": [
-    {
-      "name": "Boiler Live Monitor",
-      "short_name": "BoilerWidget",
-      "description": "Real-time cloud database telemetry monitor for Boiler room status.",
-      "icons": [
-        {
-          "src": "https://cdn-icons-png.flaticon.com/512/3409/3409140.png",
-          "sizes": "512x512",
-          "type": "image/png"
-        }
-      ],
-      "ms_ac_template": "widget-template.json"
     }
   ]
 }
