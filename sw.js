@@ -1,4 +1,4 @@
-const CACHE_NAME = 'abn-steam-v4.0';
+const CACHE_NAME = 'abn-steam-v5.0';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
