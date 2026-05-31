@@ -5,7 +5,29 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Plant Steam Boiler - ABN</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  
+  <link rel="icon" type="image/png" href="abnlogo.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+  <link rel="apple-touch-icon" sizes="192x192" href="icon-192.png">
+
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="ABN Steam">
+
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Plant Steam Boiler Monitoring System - ABN">
+  <meta property="og:description" content="Real-time industrial automation and utility monitoring interface.">
+  <meta property="og:image" content="og-preview.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Plant Steam Boiler Monitoring System - ABN">
+  <meta name="twitter:description" content="Real-time industrial automation and utility monitoring interface.">
+  <meta name="twitter:image" content="og-preview.png">
+
   <link rel="manifest" href="manifest.json">
+
   <style>
     /* Prevent default bounce and horizontal body overflow */
     html, body {
@@ -42,9 +64,64 @@
       50% { transform: scale(1.05); }
       100% { transform: scale(1); }
     }
+    @keyframes bounceShort {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-4px); }
+    }
+    .animate-bounce-short {
+      animation: bounceShort 3s ease-in-out infinite;
+    }
   </style>
 </head>
 <body class="bg-slate-950 text-slate-100 font-sans min-h-screen flex flex-col justify-between items-center antialiased select-none">
+
+  <div id="forceInstallOverlay" class="hidden fixed inset-0 bg-slate-950/95 z-[9999] flex flex-col items-center justify-center p-6 text-center">
+    <div class="max-w-sm bg-slate-900 border border-slate-800 p-8 rounded-3xl shadow-2xl flex flex-col items-center gap-5 animate-bounce-short">
+      <img src="icon-192.png" alt="App Logo" class="w-20 h-20 rounded-2xl shadow-lg border border-cyan-500/30">
+      <div>
+        <h2 class="text-xl font-black text-cyan-400 tracking-wide uppercase">Installation Required</h2>
+        <p class="text-xs text-slate-400 mt-2 leading-relaxed">
+          Ang application na ito ay nangangailangang mai-install bilang PWA sa iyong homescreen para sa factory operation gamit ang Chromebook o Mobile Terminal.
+        </p>
+      </div>
+      <button id="btnPwaInstall" class="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-black py-3 rounded-xl shadow-lg shadow-cyan-950/50 text-xs uppercase tracking-widest active:scale-95 transition-all">
+        ➕ Install Web App Now
+      </button>
+      <p id="iosInstructions" class="hidden text-[11px] text-amber-400 font-medium bg-amber-950/30 border border-amber-900/50 p-3 rounded-xl">
+        Para sa iOS/Safari: I-tap ang <span class="font-bold">"Share"</span> button sa browser panel tapos piliin ang <span class="font-bold">"Add to Home Screen"</span>.
+      </p>
+    </div>
+  </div>
+
+  <div id="appUpdatingOverlay" class="hidden fixed inset-0 bg-slate-950/90 z-[10000] flex flex-col items-center justify-center p-6 text-center">
+    <div class="flex flex-col items-center gap-4">
+      <div class="w-12 h-12 border-4 border-cyan-500 border-t-transparent rounded-full animate-spin"></div>
+      <h2 class="text-lg font-black text-slate-200 tracking-wider uppercase">Updating Application System...</h2>
+      <p class="text-xs text-slate-500 font-mono">Loading fresh production builds from repository patch...</p>
+    </div>
+  </div>
+
+  <div id="whatsNewModal" class="hidden fixed inset-0 bg-slate-950/80 z-[9998] flex items-center justify-center p-4">
+    <div class="w-full max-w-sm bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-xl flex flex-col gap-4">
+      <div class="flex items-center gap-3">
+        <div class="bg-cyan-950 border border-cyan-800 text-cyan-400 p-2 rounded-xl">🚀</div>
+        <div>
+          <h3 class="text-sm font-black text-slate-200 uppercase tracking-wider">What's New on ABN Steam</h3>
+          <p class="text-[10px] text-slate-500 font-mono">System Update Log</p>
+        </div>
+      </div>
+      <hr class="border-slate-800">
+      <ul class="text-xs text-slate-300 space-y-2.5 list-disc list-inside">
+        <li>In-add ang bagong <span class="text-purple-400 font-bold">CSG Panel Dashboard</span>.</li>
+        <li>Horizontal <span class="text-cyan-400 font-bold">Swipe Navigation Gestures</span> para sa mas madaling kontrol.</li>
+        <li><span class="text-amber-400 font-bold">PIN Authorization Gate</span> via Live Supabase Server Cloud.</li>
+        <li>Isang bagsakang Batch Upsert para sa lahat ng boiler data entry structures.</li>
+      </ul>
+      <button onclick="closeWhatsNew()" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold py-2.5 rounded-xl text-xs uppercase tracking-wider transition-all active:scale-95">
+        Got It, Proceed
+      </button>
+    </div>
+  </div>
 
   <div id="pinGateway" class="hidden fixed inset-0 bg-slate-950 z-[999] flex flex-col items-center justify-center p-4">
     <div class="w-full max-w-sm flex flex-col items-center gap-6">
@@ -236,7 +313,7 @@
                   <label for="mode_4bar" class="flex-1 text-center py-2 rounded-lg cursor-pointer transition-all peer-checked/4bar:bg-purple-600 peer-checked/4bar:text-white text-slate-400 font-black">4 BARS</label>
                   
                   <input type="radio" name="csg_steam_mode" id="mode_7bar" value="7 BARS" class="hidden peer/7bar">
-                  <label for="7bar" class="flex-1 text-center py-2 rounded-lg cursor-pointer transition-all peer-checked/7bar:bg-purple-600 peer-checked/7bar:text-white text-slate-400 font-black">7 BARS</label>
+                  <label for="mode_7bar" class="flex-1 text-center py-2 rounded-lg cursor-pointer transition-all peer-checked/7bar:bg-purple-600 peer-checked/7bar:text-white text-slate-400 font-black">7 BARS</label>
                 </div>
               </div>
             </div>
@@ -346,7 +423,7 @@
                   <span id="dispCsg_product_name" class="text-base font-black text-slate-200 mt-1 uppercase tracking-wider">NOT CHOSEN</span>
                 </div>
 
-                <div class="bg-slate-900/50 p-4 rounded-xl border border-slate-800 flex flex-col gap-1">
+                <div class="bg-slate-900/50 p-4 rounded-xl border border-slate-800/60 flex flex-col gap-1">
                   <span class="text-[9px] font-bold text-slate-500 uppercase tracking-wider">Steam Capacity Mode</span>
                   <span id="dispCsg_steam_mode" class="text-base font-black text-amber-400 mt-1 uppercase tracking-wider">UNALLOCATED</span>
                 </div>
@@ -365,13 +442,12 @@
     </div>
 
     <footer class="w-full text-center text-[10px] uppercase font-bold tracking-widest text-slate-600 border-t border-slate-900 pt-4 mt-auto">
-      &copy; Nutribev Corporation • Automation Division • Secure Multi-Node Node App
+      &copy; Nutribev Corporation • Automation Division • Secure Multi-Node App
     </footer>
   </div>
 
   <script>
     // --- DATABASE CLOUD SYNC SETTINGS ---
-    // Change these values to match your specific production configuration
     const SB_URL = "https://your-supabase-url.supabase.co";
     const SB_KEY = "your-anon-key";
     
@@ -381,21 +457,112 @@
       "Content-Type": "application/json"
     };
 
-    // --- APPLICATION STATE CONSTANTS ---
+    // --- APPLICATION STATE CONSTANTS & VERSION MANAGEMENT ---
+    let deferredPrompt = null;
+    const CURRENT_VERSION_KEY = "abn_steam_v2.0"; // Palitan ito para mag-trigger ang "What's New Log" modal
+    
     let currentInputPin = "";
     let logoutTimer = null;
-    const INACTIVITY_TIMEOUT = 12 * 60 * 60 * 1000; // 12-Hour strict rollover runtime
+    const INACTIVITY_TIMEOUT = 12 * 60 * 60 * 1000; // 12-Hour strict runtime rollover
 
-    // --- INITIALIZATION INTERFACE LOAD ENTRY POINT ---
+    // --- INITIALIZATION ENTRY POINT ---
     window.addEventListener('DOMContentLoaded', () => {
       checkStoredSession();
-      // Setup window touch start monitors to continuously check activity lifetimes
+      checkWhatsNewTrigger();
+      
+      // Setup window trackers to refresh the login security lifetime
       ['click', 'touchstart', 'mousemove', 'keydown'].forEach(evt => {
         window.addEventListener(evt, resetInactivityTimer);
       });
     });
 
-    // --- PIN GATEWAY MECHANICS ---
+    // ================= PWA LOGIC, FORCE INSTALLATION & LIVE AUTO UPDATES =================
+    
+    window.addEventListener('beforeinstallprompt', (e) => {
+      // Pigilan ang default system banner ng browser
+      e.preventDefault();
+      deferredPrompt = e;
+      
+      // Kung hindi pa naka-standalone/installed web app, harangan ang UI view area
+      if (!window.matchMedia('(display-mode: standalone)').matches) {
+        document.getElementById('forceInstallOverlay').classList.remove('hidden');
+      }
+    });
+
+    // Pangasiwaan ang native chrome installation handler button
+    document.getElementById('btnPwaInstall').addEventListener('click', async () => {
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        if (outcome === 'accepted') {
+          document.getElementById('forceInstallOverlay').classList.add('hidden');
+        }
+        deferredPrompt = null;
+      }
+    });
+
+    // PWA iOS Custom Safari Detection Guide
+    const isIosDevice = () => {
+      return /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+    };
+    if (isIosDevice() && !window.matchMedia('(display-mode: standalone)').matches) {
+      document.getElementById('forceInstallOverlay').classList.remove('hidden');
+      document.getElementById('btnPwaInstall').classList.add('hidden');
+      document.getElementById('iosInstructions').classList.remove('hidden');
+    }
+
+    // INTERFACE REGISTER SERVICE WORKER ENGINE
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('sw.js').then((reg) => {
+          
+          // Makinig kung nakakita ang local client ng fresh code push updates sa network files
+          reg.addEventListener('updatefound', () => {
+            const freshWorker = reg.installing;
+            freshWorker.addEventListener('statechange', () => {
+              if (freshWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                // May bagong network file patch! Harangan ang layout at mag-update
+                document.getElementById('appUpdatingOverlay').classList.remove('hidden');
+                setTimeout(() => {
+                  freshWorker.postMessage({ action: 'skipWaiting' });
+                }, 1000);
+              }
+            });
+          });
+
+        }).catch((err) => console.error('Service Worker Registration Blocked:', err));
+      });
+
+      // Kusang magre-reload ang system page kapag bago na ang active local caching controller
+      let systemRefreshing = false;
+      navigator.serviceWorker.addEventListener('controllerchange', () => {
+        if (!systemRefreshing) {
+          systemRefreshing = true;
+          localStorage.setItem('forceShowUpdatePatchNotes', 'true');
+          window.location.reload();
+        }
+      });
+    }
+
+    // WHAT'S NEW SYSTEM DIALOGUE MANAGER
+    function checkWhatsNewTrigger() {
+      const cachedVersion = localStorage.getItem('abn_app_build_version');
+      const forceTrigger = localStorage.getItem('forceShowUpdatePatchNotes');
+
+      if (cachedVersion !== CURRENT_VERSION_KEY || forceTrigger === 'true') {
+        document.getElementById('whatsNewModal').classList.remove('hidden');
+        localStorage.setItem('abn_app_build_version', CURRENT_VERSION_KEY);
+        localStorage.removeItem('forceShowUpdatePatchNotes');
+      }
+    }
+
+    function closeWhatsNew() {
+      document.getElementById('whatsNewModal').classList.add('hidden');
+    }
+
+    // ================= ORIGINAL SYSTEM LOGIC METHODS =================
+
+    // PIN GATEWAY MECHANICS
     function pressPin(digit) {
       if(currentInputPin.length < 4) {
         currentInputPin += digit;
@@ -432,25 +599,23 @@
       msgEl.className = "text-[10px] uppercase tracking-wider text-slate-500 font-bold mt-1 text-center h-4";
     }
 
-    // --- SUPABASE SECURITY AUTHORIZATION LOOKUP ---
+    // SUPABASE SECURITY AUTHORIZATION LOOKUP
     async function validatePinAgainstCloud() {
       const msgEl = document.getElementById('pinStatusMsg');
       msgEl.innerText = "Verifying Credentials...";
       msgEl.className = "text-[10px] uppercase tracking-wider text-amber-400 font-bold mt-1 text-center h-4 animate-pulse";
 
       try {
-        // Query server table directly avoiding hardcoded values on client interface bundles
         const response = await fetch(`${SB_URL}/rest/v1/access_codes?pin_code=eq.${currentInputPin}&select=role`, {
           method: "GET",
           headers: headers
         });
 
         if (!response.ok) throw new Error("Network Response Failure");
-        
         const data = await response.json();
 
         if (data && data.length > 0) {
-          const matchedRole = data[0].role; // Returns 'viewer' or 'operator'
+          const matchedRole = data[0].role; // 'viewer' o 'operator'
           storeSession(matchedRole);
         } else {
           msgEl.innerText = "❌ Access Denied: Invalid PIN";
@@ -465,7 +630,7 @@
       }
     }
 
-    // --- MANAGEMENT OF STORAGE VALUES ---
+    // MANAGEMENT OF STORAGE VALUES
     function storeSession(role) {
       localStorage.setItem("role", role);
       localStorage.setItem("sessionTimestamp", Date.now().toString());
@@ -477,240 +642,200 @@
       const sessionTime = localStorage.getItem("sessionTimestamp");
 
       if (role && sessionTime) {
-        // Strict evaluation of the 12-hour timeout system threshold
         if (Date.now() - parseInt(sessionTime) < INACTIVITY_TIMEOUT) {
           applyRolePrivileges(role);
           return;
         }
       }
-      // If verification parameters are not satisfied, invoke structural system reset
       logoutSession();
     }
 
     function applyRolePrivileges(role) {
       document.getElementById('pinGateway').classList.add('hidden');
       document.getElementById('appContainer').classList.remove('hidden');
-      
-      // Zero out structural badge items prior to assignments
+
+      // Reset badges
       document.getElementById('roleBadgeOperator').classList.add('hidden');
       document.getElementById('roleBadgeSupervisor').classList.add('hidden');
+      document.getElementById('operatorViewBlock').classList.add('hidden');
+      
+      // Remap grid elements dynamically
+      const dashBlock = document.getElementById('supervisorDashboardViewBlock');
+      dashBlock.className = "w-full rounded-3xl bg-slate-900 border border-slate-800 p-6 shadow-xl flex flex-col gap-4 lg:col-span-12";
 
       if (role === 'operator') {
-        document.getElementById('operatorViewBlock').classList.remove('hidden');
         document.getElementById('roleBadgeOperator').classList.remove('hidden');
-        // Maximize grid allocation parameters smoothly
-        document.getElementById('supervisorDashboardViewBlock').className = "lg:col-span-7 w-full rounded-3xl bg-slate-900 border border-slate-800 p-6 shadow-xl flex flex-col gap-4";
-      } else {
-        // Supervisor/Viewer Role execution pathway (Read Only)
-        document.getElementById('operatorViewBlock').classList.add('hidden');
+        document.getElementById('operatorViewBlock').classList.remove('hidden');
+        dashBlock.className = "w-full rounded-3xl bg-slate-900 border border-slate-800 p-6 shadow-xl flex flex-col gap-4 lg:col-span-7";
+      } else if (role === 'viewer' || role === 'supervisor') {
         document.getElementById('roleBadgeSupervisor').classList.remove('hidden');
-        // Expand display card to encompass full container width space natively
-        document.getElementById('supervisorDashboardViewBlock').className = "lg:col-span-12 w-full rounded-3xl bg-slate-900 border border-slate-800 p-6 shadow-xl flex flex-col gap-4";
       }
-      
+
       resetInactivityTimer();
-      fetchDashboardData();
+      startPollingLiveFeed();
     }
 
     function logoutSession() {
       localStorage.removeItem("role");
       localStorage.removeItem("sessionTimestamp");
-      currentInputPin = "";
-      if(logoutTimer) clearTimeout(logoutTimer);
-      
       document.getElementById('appContainer').classList.add('hidden');
       document.getElementById('pinGateway').classList.remove('hidden');
-      updatePinDisplay();
-      clearStatusMessage();
+      clearPin();
+      stopPollingLiveFeed();
     }
 
     function resetInactivityTimer() {
       if (!localStorage.getItem("role")) return;
-      
-      // Update session timestamp for continuous active utilization lifetimes
-      localStorage.setItem("sessionTimestamp", Date.now().toString());
-      
-      if (logoutTimer) clearTimeout(logoutTimer);
+      clearTimeout(logoutTimer);
       logoutTimer = setTimeout(() => {
-        console.warn("Session expired due to 12h lifecycle limit.");
+        console.warn("Session expired due to strict factory runtime rollover rules.");
         logoutSession();
       }, INACTIVITY_TIMEOUT);
     }
 
-    // --- SWIPE TOUCH SCROLL DOT SYNCHRONIZER ENGINE ---
-    function syncSwipeIndicator(elementId, dot1Id, dot2Id) {
-      const container = document.getElementById(elementId);
-      const scrollLeft = container.scrollLeft;
-      const clientWidth = container.clientWidth;
-      
-      // Check which page is currently centered in the visible snap viewport
-      if (scrollLeft >= (clientWidth / 2)) {
-        document.getElementById(dot1Id).className = "w-2 h-2 rounded-full transition-all duration-300 bg-slate-700";
-        document.getElementById(dot2Id).className = "w-2 h-2 rounded-full transition-all duration-300 bg-purple-500 shadow shadow-purple-400";
+    // CAROUSEL INDICATION SYNC SCRIPTS
+    function syncSwipeIndicator(containerId, dot1Id, dot2Id) {
+      const container = document.getElementById(containerId);
+      const dot1 = document.getElementById(dot1Id);
+      const dot2 = document.getElementById(dot2Id);
+      if (!container || !dot1 || !dot2) return;
+
+      const position = container.scrollLeft;
+      const width = container.clientWidth;
+
+      if (position >= width * 0.5) {
+        dot1.className = "w-2 h-2 rounded-full transition-all duration-300 bg-slate-700";
+        dot2.className = "w-2 h-2 rounded-full transition-all duration-300 bg-cyan-400";
       } else {
-        document.getElementById(dot1Id).className = "w-2 h-2 rounded-full transition-all duration-300 bg-cyan-400 shadow shadow-cyan-400";
-        document.getElementById(dot2Id).className = "w-2 h-2 rounded-full transition-all duration-300 bg-slate-700";
+        dot1.className = "w-2 h-2 rounded-full transition-all duration-300 bg-cyan-400";
+        dot2.className = "w-2 h-2 rounded-full transition-all duration-300 bg-slate-700";
       }
     }
 
-    // --- REALTIME DATA RETRIEVAL AND FEED UPDATES ---
-    async function fetchDashboardData() {
-      // Discontinue execution operations if application window loses foreground authorization context
-      if (document.getElementById('appContainer').classList.contains('hidden')) return;
+    // AUTOMATED POLLING & BATCH DATA OVERVIEW PACKETS
+    let pollingWorkerInterval = null;
 
+    function startPollingLiveFeed() {
+      fetchDashboardData();
+      pollingWorkerInterval = setInterval(fetchDashboardData, 5000);
+    }
+
+    function stopPollingLiveFeed() {
+      clearInterval(pollingWorkerInterval);
+    }
+
+    async function fetchDashboardData() {
+      const stampEl = document.getElementById('liveTimestamp');
       try {
         const response = await fetch(`${SB_URL}/rest/v1/boiler_status?select=*`, {
           method: "GET",
           headers: headers
         });
+        if (!response.ok) throw new Error("Fetch Error");
+        const data = await response.json();
 
-        if (response.ok) {
-          const stations = await response.json();
-          
-          stations.forEach(node => {
-            if (node.id === 'boilerA') {
-              document.getElementById('badgeA_role').innerText = node.role || "MAIN";
-              document.getElementById('dispA_pres_PV').innerText = (node.pres_pv !== null) ? parseFloat(node.pres_pv).toFixed(1) : "0.0";
-              document.getElementById('dispA_pres_SV').innerText = (node.pres_sv !== null) ? parseFloat(node.pres_sv).toFixed(1) : "0.0";
-              document.getElementById('dispA_temp_PV').innerText = node.temp_pv || "0";
-              document.getElementById('dispA_temp_SV').innerText = node.temp_sv || "350";
-              
-              // Seed existing operator panel input fields with current database values only if fields are empty
-              if(!document.getElementById('boilerA_pres_PV').value && node.pres_pv) {
-                document.getElementById('boilerA_pres_PV').value = node.pres_pv;
-                document.getElementById('boilerA_pres_SV').value = parseFloat(node.pres_sv).toFixed(1);
-                document.getElementById('boilerA_temp_PV').value = node.temp_pv;
-                document.getElementById('boilerA_temp_SV').value = node.temp_sv;
-              }
-            } 
-            else if (node.id === 'boilerB') {
-              document.getElementById('badgeB_role').innerText = node.role || "BACKUP";
-              document.getElementById('dispB_pres_PV').innerText = (node.pres_pv !== null) ? parseFloat(node.pres_pv).toFixed(1) : "0.0";
-              document.getElementById('dispB_pres_SV').innerText = (node.pres_sv !== null) ? parseFloat(node.pres_sv).toFixed(1) : "0.0";
-              document.getElementById('dispB_temp_PV').innerText = node.temp_pv || "0";
-              document.getElementById('dispB_temp_SV').innerText = node.temp_sv || "350";
-
-              if(!document.getElementById('boilerB_pres_PV').value && node.pres_pv) {
-                document.getElementById('boilerB_pres_PV').value = node.pres_pv;
-                document.getElementById('boilerB_pres_SV').value = parseFloat(node.pres_sv).toFixed(1);
-                document.getElementById('boilerB_temp_PV').value = node.temp_pv;
-                document.getElementById('boilerB_temp_SV').value = node.temp_sv;
-              }
+        data.forEach(node => {
+          if (node.id === 'boiler_a') {
+            document.getElementById('dispA_pres_PV').innerText = parseFloat(node.pres_pv || 0).toFixed(1);
+            document.getElementById('dispA_pres_SV').innerText = parseFloat(node.pres_sv || 0).toFixed(1);
+            document.getElementById('dispA_temp_PV').innerText = parseInt(node.temp_pv || 0);
+            document.getElementById('dispA_temp_SV').innerText = parseInt(node.temp_sv || 0);
+            const badge = document.getElementById('badgeA_role');
+            badge.innerText = node.role || 'OFFLINE';
+            badge.className = node.role === 'MAIN' 
+              ? "text-[9px] font-extrabold px-2 py-0.5 rounded bg-cyan-950 text-cyan-400 border border-cyan-800/40 tracking-wider" 
+              : "text-[9px] font-extrabold px-2 py-0.5 rounded bg-slate-800 text-slate-400 tracking-wider";
+          }
+          if (node.id === 'boiler_b') {
+            document.getElementById('dispB_pres_PV').innerText = parseFloat(node.pres_pv || 0).toFixed(1);
+            document.getElementById('dispB_pres_SV').innerText = parseFloat(node.pres_sv || 0).toFixed(1);
+            document.getElementById('dispB_temp_PV').innerText = parseInt(node.temp_pv || 0);
+            document.getElementById('dispB_temp_SV').innerText = parseInt(node.temp_sv || 0);
+            const badge = document.getElementById('badgeB_role');
+            badge.innerText = node.role || 'OFFLINE';
+            badge.className = node.role === 'MAIN' 
+              ? "text-[9px] font-extrabold px-2 py-0.5 rounded bg-emerald-950 text-emerald-400 border border-emerald-800/40 tracking-wider" 
+              : "text-[9px] font-extrabold px-2 py-0.5 rounded bg-slate-800 text-slate-400 tracking-wider";
+          }
+          if (node.id === 'csg') {
+            document.getElementById('dispCsg_pres_PV').innerText = parseFloat(node.pres_pv || 0).toFixed(2);
+            document.getElementById('dispCsg_pres_SV').innerText = parseInt(node.pres_sv || 0);
+            document.getElementById('dispCsg_product_name').innerText = node.product_name || 'NOT CHOSEN';
+            document.getElementById('dispCsg_steam_mode').innerText = node.steam_mode || 'UNALLOCATED';
+            
+            if (node.updated_at) {
+              const timeFormatted = new Date(node.updated_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', second:'2-digit'});
+              document.getElementById('dispCsg_updated_at').innerText = timeFormatted;
             }
-            else if (node.id === 'csg') {
-              // Populate the newly requested CSG telemetry card fields
-              document.getElementById('dispCsg_pres_PV').innerText = (node.pres_pv !== null) ? parseFloat(node.pres_pv).toFixed(2) : "0.00";
-              document.getElementById('dispCsg_pres_SV').innerText = node.pres_sv || "0";
-              document.getElementById('dispCsg_product_name').innerText = node.product_name || "VMR";
-              document.getElementById('dispCsg_steam_mode').innerText = node.steam_mode || "4 BARS";
-              
-              // Local formatted display string configuration mapping parsing
-              if(node.updated_at) {
-                const ts = new Date(node.updated_at);
-                document.getElementById('dispCsg_updated_at').innerText = ts.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', second:'2-digit'});
-              }
+          }
+        });
 
-              if(!document.getElementById('csg_pres_PV').value && node.pres_pv) {
-                document.getElementById('csg_pres_PV').value = node.pres_pv;
-                document.getElementById('csg_pres_SV').value = node.pres_sv;
-                document.getElementById('csg_product_name').value = node.product_name || "VMR";
-                const modeId = (node.steam_mode === "7 BARS") ? "mode_7bar" : "mode_4bar";
-                if(document.getElementById(modeId)) document.getElementById(modeId).checked = true;
-              }
-            }
-          });
-
-          // Global Sync Header Flag Timestamp update logic
-          document.getElementById('liveTimestamp').innerText = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', second:'2-digit'});
-        }
-      } catch (error) {
-        console.error("Telemetry Retrieval Fault:", error);
-        document.getElementById('liveTimestamp').innerText = "FAULT";
+        stampEl.innerText = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+        stampEl.className = "text-emerald-400 font-bold";
+      } catch (err) {
+        console.error("Dashboard Sync Error:", err);
+        stampEl.innerText = "Offline";
+        stampEl.className = "text-red-500 font-bold";
       }
     }
 
-    // --- SINGLE-BATCH MULTI-ROW PRODUCTION UPSERT SERVICE ---
     async function saveAllToSupabase() {
       const saveBtn = document.getElementById('saveBtn');
-      saveBtn.innerText = "⏳ Synchronizing Batch Array...";
+      saveBtn.innerText = "⚡ Batch Committing Packets...";
       saveBtn.disabled = true;
 
-      // Extract raw data fields safely from active UI elements
-      const valA_role = document.querySelector('input[name="boilerA_role"]:checked')?.value || "MAIN";
-      const valB_role = document.querySelector('input[name="boilerB_role"]:checked')?.value || "BACKUP";
-      const valCsg_steam_mode = document.querySelector('input[name="csg_steam_mode"]:checked')?.value || "4 BARS";
+      // Extract form values
+      const boilerA_role = document.querySelector('input[name="boilerA_role"]:checked')?.value || 'MAIN';
+      const boilerA_pres_PV = parseFloat(document.getElementById('boilerA_pres_PV').value) || 0.0;
+      const boilerA_pres_SV = parseFloat(document.getElementById('boilerA_pres_SV').value) || 1.0;
+      const boilerA_temp_PV = parseInt(document.getElementById('boilerA_temp_PV').value) || 0;
+      const boilerA_temp_SV = parseInt(document.getElementById('boilerA_temp_SV').value) || 350;
 
-      const currentIsoTimestamp = new Date().toISOString();
+      const boilerB_role = document.querySelector('input[name="boilerB_role"]:checked')?.value || 'BACKUP';
+      const boilerB_pres_PV = parseFloat(document.getElementById('boilerB_pres_PV').value) || 0.0;
+      const boilerB_pres_SV = parseFloat(document.getElementById('boilerB_pres_SV').value) || 1.0;
+      const boilerB_temp_PV = parseInt(document.getElementById('boilerB_temp_PV').value) || 0;
+      const boilerB_temp_SV = parseInt(document.getElementById('boilerB_temp_SV').value) || 350;
 
-      // Formulate a clean array mapping out all components to push in one atomic operation
+      const csg_pres_PV = parseFloat(document.getElementById('csg_pres_PV').value) || 0.0;
+      const csg_pres_SV = parseInt(document.getElementById('csg_pres_SV').value) || 1;
+      const csg_product_name = document.getElementById('csg_product_name').value || 'VMR';
+      const csg_steam_mode = document.querySelector('input[name="csg_steam_mode"]:checked')?.value || '4 BARS';
+
+      const isoTimestamp = new Date().toISOString();
+
       const payload = [
-        {
-          id: "boilerA",
-          unit_name: "Boiler Station A",
-          role: valA_role,
-          pres_pv: parseFloat(document.getElementById('boilerA_pres_PV').value) || 0.0,
-          pres_sv: parseFloat(document.getElementById('boilerA_pres_SV').value) || 1.0,
-          temp_pv: parseInt(document.getElementById('boilerA_temp_PV').value) || 0,
-          temp_sv: parseInt(document.getElementById('boilerA_temp_SV').value) || 350,
-          updated_at: currentIsoTimestamp
-        },
-        {
-          id: "boilerB",
-          unit_name: "Boiler Station B",
-          role: valB_role,
-          pres_pv: parseFloat(document.getElementById('boilerB_pres_PV').value) || 0.0,
-          pres_sv: parseFloat(document.getElementById('boilerB_pres_SV').value) || 1.0,
-          temp_pv: parseInt(document.getElementById('boilerB_temp_PV').value) || 0,
-          temp_sv: parseInt(document.getElementById('boilerB_temp_SV').value) || 350,
-          updated_at: currentIsoTimestamp
-        },
-        {
-          id: "csg",
-          unit_name: "Clean Steam Generator",
-          pres_pv: parseFloat(document.getElementById('csg_pres_PV').value) || 0.0,
-          pres_sv: parseInt(document.getElementById('csg_pres_SV').value) || 4,
-          product_name: document.getElementById('csg_product_name').value,
-          steam_mode: valCsg_steam_mode,
-          updated_at: currentIsoTimestamp
-        }
+        { id: "boiler_a", role: boilerA_role, pres_pv: boilerA_pres_PV, pres_sv: boilerA_pres_SV, temp_pv: boilerA_temp_PV, temp_sv: boilerA_temp_SV, updated_at: isoTimestamp },
+        { id: "boiler_b", role: boilerB_role, pres_pv: boilerB_pres_PV, pres_sv: boilerB_pres_SV, temp_pv: boilerB_temp_PV, temp_sv: boilerB_temp_SV, updated_at: isoTimestamp },
+        { id: "csg", pres_pv: csg_pres_PV, pres_sv: csg_pres_SV, product_name: csg_product_name, steam_mode: csg_steam_mode, updated_at: isoTimestamp }
       ];
 
       try {
-        // Send payload containing upsert headers to Supabase PostgREST api gateway framework endpoint
         const response = await fetch(`${SB_URL}/rest/v1/boiler_status`, {
           method: "POST",
-          headers: { 
-            ...headers, 
-            "Prefer": "resolution=merge-duplicates" 
-          },
+          headers: { ...headers, "Prefer": "resolution=merge-duplicates" },
           body: JSON.stringify(payload)
         });
 
         if (response.ok) {
-          alert("⚡ Production Batch System Broadcast Synchronized Successfully!");
-          await fetchDashboardData(); // Fast track local screen variable updates immediately
+          fetchDashboardData();
+          // Clear operational telemetry data inputs safely
+          document.getElementById('boilerA_pres_PV').value = "";
+          document.getElementById('boilerA_temp_PV').value = "";
+          document.getElementById('boilerB_pres_PV').value = "";
+          document.getElementById('boilerB_temp_PV').value = "";
+          document.getElementById('csg_pres_PV').value = "";
+          alert("✅ Batch Upsert Successful! All terminal grids updated.");
         } else {
-          alert("🚨 Broadcast Rejected: Check Database Schema Policies.");
+          alert("❌ Server Reject: Check Database Rules.");
         }
       } catch (error) {
-        console.error("Database Write Operation Failure:", error);
-        alert("🚨 Critical Cloud Network Error. Check local connectivity.");
+        console.error("Error saving data to Supabase:", error);
+        alert("🚨 Sync Failed: Check network terminal connectivity.");
       } finally {
         saveBtn.innerText = "💾 Save & Batch Upsert All Stations";
         saveBtn.disabled = false;
       }
-    }
-
-    // --- TIMED 5-SECOND HIGH-FREQUENCY POLLING ENGINE LOOP ---
-    setInterval(fetchDashboardData, 5000);
-
-    // --- PWA SERVICE WORKER REGISTRATION MOUNT PIPELINE ---
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('sw.js')
-          .then((reg) => console.log('ABN Framework ServiceWorker Active!'))
-          .catch((err) => console.error('PWA Registration Aborted:', err));
-      });
     }
   </script>
 </body>
