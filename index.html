@@ -29,48 +29,14 @@
   <link rel="manifest" href="manifest.json">
 
   <style>
-    /* Prevent default bounce and horizontal body overflow */
-    html, body {
-      overflow-x: hidden;
-      margin: 0;
-      padding: 0;
-      width: 100%;
-    }
-    /* Hide scrollbars globally */
-    ::-webkit-scrollbar {
-      display: none;
-    }
-    /* Touch Smooth Snap Carousel Styling */
-    .snap-container {
-      display: flex;
-      overflow-x: auto;
-      scroll-snap-type: x mandatory;
-      scroll-behavior: smooth;
-      -webkit-overflow-scrolling: touch;
-      width: 100%;
-    }
-    .snap-panel {
-      flex: 0 0 100%;
-      width: 100%;
-      scroll-snap-align: start;
-      scroll-snap-stop: always;
-    }
-    /* Pulse badge styling */
-    .badge-pulse {
-      animation: pulse 2s infinite;
-    }
-    @keyframes pulse {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.05); }
-      100% { transform: scale(1); }
-    }
-    @keyframes bounceShort {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-4px); }
-    }
-    .animate-bounce-short {
-      animation: bounceShort 3s ease-in-out infinite;
-    }
+    html, body { overflow-x: hidden; margin: 0; padding: 0; width: 100%; }
+    ::-webkit-scrollbar { display: none; }
+    .snap-container { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; scroll-behavior: smooth; -webkit-overflow-scrolling: touch; width: 100%; }
+    .snap-panel { flex: 0 0 100%; width: 100%; scroll-snap-align: start; scroll-snap-stop: always; }
+    .badge-pulse { animation: pulse 2s infinite; }
+    @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+    @keyframes bounceShort { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
+    .animate-bounce-short { animation: bounceShort 3s ease-in-out infinite; }
   </style>
 </head>
 <body class="bg-slate-950 text-slate-100 font-sans min-h-screen flex flex-col justify-between items-center antialiased select-none">
@@ -113,12 +79,26 @@
       <hr class="border-slate-800">
       <ul class="text-xs text-slate-300 space-y-2.5 list-disc list-inside">
         <li>In-add ang bagong <span class="text-purple-400 font-bold">CSG Panel Dashboard</span>.</li>
-        <li>Horizontal <span class="text-cyan-400 font-bold">Swipe Navigation Gestures</span> para sa mas madaling kontrol.</li>
-        <li><span class="text-amber-400 font-bold">PIN Authorization Gate</span> via Live Supabase Server Cloud.</li>
-        <li>Isang bagsakang Batch Upsert para sa lahat ng boiler data entry structures.</li>
+        <li>Batch Upsert para sa lahat ng istasyon kasama ang <span class="text-purple-400 font-bold">CSG</span>.</li>
+        <li>Pinalitan ang dropdown ng malayang <span class="text-emerald-400 font-bold">SV Input Field</span> (Decimal values allowed).</li>
+        <li>Naka-fix na sa <span class="text-amber-400 font-bold">750°C</span> ang Furnace Target.</li>
+        <li>May <span class="text-cyan-400 font-bold">Operator Identification</span> tracking system na sa monitor.</li>
       </ul>
       <button onclick="closeWhatsNew()" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold py-2.5 rounded-xl text-xs uppercase tracking-wider transition-all active:scale-95">
         Got It, Proceed
+      </button>
+    </div>
+  </div>
+
+  <div id="operatorNameGateway" class="hidden fixed inset-0 bg-slate-950/95 z-[9995] flex flex-col items-center justify-center p-4">
+    <div class="w-full max-w-sm bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-2xl flex flex-col gap-4">
+      <div class="text-center">
+        <h3 class="text-base font-black text-amber-400 uppercase tracking-wider">Operator Identification</h3>
+        <p class="text-xs text-slate-400 mt-1">Sino ang kasalukuyang duty operator sa shift na ito?</p>
+      </div>
+      <input type="text" id="inputOperatorName" placeholder="E.g., Juan Dela Cruz" class="w-full bg-slate-950 border border-slate-800 text-slate-100 rounded-xl px-4 py-3 text-sm font-bold text-center focus:outline-none focus:border-amber-500 uppercase tracking-wide">
+      <button onclick="submitOperatorName()" class="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-black py-3 rounded-xl text-xs uppercase tracking-widest transition-all active:scale-95">
+        Confirm & Access Terminal
       </button>
     </div>
   </div>
@@ -141,21 +121,19 @@
       </div>
 
       <div class="grid grid-cols-3 gap-3 w-full">
-        <button onclick="pressPin('1')" class="bg-slate-900 hover:bg-slate-800 border border-slate-800/80 active:scale-95 transition-all py-4 rounded-xl text-xl font-bold text-slate-200">1</button>
-        <button onclick="pressPin('2')" class="bg-slate-900 hover:bg-slate-800 border border-slate-800/80 active:scale-95 transition-all py-4 rounded-xl text-xl font-bold text-slate-200">2</button>
-        <button onclick="pressPin('3')" class="bg-slate-900 hover:bg-slate-800 border border-slate-800/80 active:scale-95 transition-all py-4 rounded-xl text-xl font-bold text-slate-200">3</button>
-        <button onclick="pressPin('4')" class="bg-slate-900 hover:bg-slate-800 border border-slate-800/80 active:scale-95 transition-all py-4 rounded-xl text-xl font-bold text-slate-200">4</button>
-        <button onclick="pressPin('5')" class="bg-slate-900 hover:bg-slate-800 border border-slate-800/80 active:scale-95 transition-all py-4 rounded-xl text-xl font-bold text-slate-200">5</button>
-        <button onclick="pressPin('6')" class="bg-slate-900 hover:bg-slate-800 border border-slate-800/80 active:scale-95 transition-all py-4 rounded-xl text-xl font-bold text-slate-200">6</button>
-        <button onclick="pressPin('7')" class="bg-slate-900 hover:bg-slate-800 border border-slate-800/80 active:scale-95 transition-all py-4 rounded-xl text-xl font-bold text-slate-200">7</button>
-        <button onclick="pressPin('8')" class="bg-slate-900 hover:bg-slate-800 border border-slate-800/80 active:scale-95 transition-all py-4 rounded-xl text-xl font-bold text-slate-200">8</button>
-        <button onclick="pressPin('9')" class="bg-slate-900 hover:bg-slate-800 border border-slate-800/80 active:scale-95 transition-all py-4 rounded-xl text-xl font-bold text-slate-200">9</button>
-        <button onclick="clearPin()" class="bg-red-950/40 border border-red-900/60 text-red-400 active:scale-95 transition-all py-4 rounded-xl text-xs font-black uppercase tracking-wider">Clear</button>
-        <button onclick="pressPin('0')" class="bg-slate-900 hover:bg-slate-800 border border-slate-800/80 active:scale-95 transition-all py-4 rounded-xl text-xl font-bold text-slate-200">0</button>
-        <button onclick="backspacePin()" class="bg-slate-800 border border-slate-700 text-slate-300 active:scale-95 transition-all py-4 rounded-xl flex items-center justify-center">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-5 h-5">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9.75 14.25 12m0 0 2.25 2.25M14.25 12l2.25-2.25M14.25 12l-2.25 2.25m-1.75-6H20.25a2.25 2.25 0 0 1 2.25 2.25v6.75a2.25 2.25 0 0 1-2.25 2.25H10.5a2.25 2.25 0 0 1-1.697-.775l-4.502-5.25a2.25 2.25 0 0 1 0-2.95l4.502-5.25a2.25 2.25 0 0 1 1.697-.775Z" />
-          </svg>
+        <button onclick="pressPin('1')" class="bg-slate-900 hover:bg-slate-800 border border-slate-800/80 py-4 rounded-xl text-xl font-bold text-slate-200">1</button>
+        <button onclick="pressPin('2')" class="bg-slate-900 hover:bg-slate-800 border border-slate-800/80 py-4 rounded-xl text-xl font-bold text-slate-200">2</button>
+        <button onclick="pressPin('3')" class="bg-slate-900 hover:bg-slate-800 border border-slate-800/80 py-4 rounded-xl text-xl font-bold text-slate-200">3</button>
+        <button onclick="pressPin('4')" class="bg-slate-900 hover:bg-slate-800 border border-slate-800/80 py-4 rounded-xl text-xl font-bold text-slate-200">4</button>
+        <button onclick="pressPin('5')" class="bg-slate-900 hover:bg-slate-800 border border-slate-800/80 py-4 rounded-xl text-xl font-bold text-slate-200">5</button>
+        <button onclick="pressPin('6')" class="bg-slate-900 hover:bg-slate-800 border border-slate-800/80 py-4 rounded-xl text-xl font-bold text-slate-200">6</button>
+        <button onclick="pressPin('7')" class="bg-slate-900 hover:bg-slate-800 border border-slate-800/80 py-4 rounded-xl text-xl font-bold text-slate-200">7</button>
+        <button onclick="pressPin('8')" class="bg-slate-900 hover:bg-slate-800 border border-slate-800/80 py-4 rounded-xl text-xl font-bold text-slate-200">8</button>
+        <button onclick="pressPin('9')" class="bg-slate-900 hover:bg-slate-800 border border-slate-800/80 py-4 rounded-xl text-xl font-bold text-slate-200">9</button>
+        <button onclick="clearPin()" class="bg-red-950/40 border border-red-900/60 text-red-400 py-4 rounded-xl text-xs font-black uppercase tracking-wider">Clear</button>
+        <button onclick="pressPin('0')" class="bg-slate-900 hover:bg-slate-800 border border-slate-800/80 py-4 rounded-xl text-xl font-bold text-slate-200">0</button>
+        <button onclick="backspacePin()" class="bg-slate-800 border border-slate-700 text-slate-300 py-4 rounded-xl flex items-center justify-center">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9.75 14.25 12m0 0 2.25 2.25M14.25 12l2.25-2.25M14.25 12l-2.25 2.25m-1.75-6H20.25a2.25 2.25 0 0 1 2.25 2.25v6.75a2.25 2.25 0 0 1-2.25 2.25H10.5a2.25 2.25 0 0 1-1.697-.775l-4.502-5.25a2.25 2.25 0 0 1 0-2.95l4.502-5.25a2.25 2.25 0 0 1 1.697-.775Z" /></svg>
         </button>
       </div>
     </div>
@@ -165,18 +143,14 @@
     
     <div class="w-full flex justify-between items-center border-b border-slate-900 pb-4">
       <div>
-        <h1 class="text-2xl font-black tracking-wider text-cyan-400 uppercase flex items-center gap-2">
-          🏭 PLANT STEAM MONITOR
-        </h1>
+        <h1 class="text-2xl font-black tracking-wider text-cyan-400 uppercase flex items-center gap-2">🏭 PLANT STEAM MONITOR</h1>
         <p class="text-[10px] text-slate-500 uppercase tracking-widest mt-0.5">Automated Grid Infrastructure System</p>
       </div>
       <div class="flex items-center gap-3">
         <div id="roleBadgeOperator" class="hidden text-[10px] font-black tracking-widest bg-amber-500 text-slate-950 px-3 py-1.5 rounded-md shadow-md border border-amber-400">OPERATOR</div>
         <div id="roleBadgeSupervisor" class="hidden text-[10px] font-black tracking-widest bg-purple-600 text-slate-100 px-3 py-1.5 rounded-md shadow-md border border-purple-400">SUPERVISOR</div>
         
-        <button onclick="logoutSession()" class="bg-slate-900 hover:bg-slate-800 text-slate-400 border border-slate-800 hover:text-red-400 px-3 py-1.5 rounded-xl text-xs font-bold transition-all active:scale-95">
-          🚪 Switch User
-        </button>
+        <button onclick="logoutSession()" class="bg-slate-900 hover:bg-slate-800 text-slate-400 border border-slate-800 hover:text-red-400 px-3 py-1.5 rounded-xl text-xs font-bold transition-all active:scale-95">🚪 Switch User</button>
       </div>
     </div>
 
@@ -186,7 +160,7 @@
         <div class="flex justify-between items-center">
           <div>
             <span class="text-xs font-semibold uppercase tracking-wider text-amber-400">Control Panel</span>
-            <h3 class="text-base font-black text-slate-200">Operator Entry Module</h3>
+            <h3 class="text-sm font-bold text-slate-400 font-mono">DUTY: <span id="labelActiveOperator" class="text-white font-black underline uppercase">---</span></h3>
           </div>
           <div class="flex gap-1.5 items-center bg-slate-950 px-3 py-1.5 rounded-full border border-slate-800">
             <span id="dotOpPage1" class="w-2 h-2 rounded-full transition-all duration-300 bg-cyan-400"></span>
@@ -218,9 +192,7 @@
                 </div>
                 <div>
                   <label class="text-[9px] font-black text-slate-400 uppercase tracking-wider">Steam Pres. SV</label>
-                  <select id="boilerA_pres_SV" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-2 py-1.5 text-xs font-bold text-white focus:outline-none focus:border-cyan-500">
-                    <option value="1.0">1.0 Bar</option><option value="2.0">2.0 Bar</option><option value="3.0">3.0 Bar</option><option value="4.0">4.0 Bar</option><option value="5.0">5.0 Bar</option><option value="6.0">6.0 Bar</option><option value="7.0">7.0 Bar</option><option value="8.0">8.0 Bar</option><option value="9.0">9.0 Bar</option><option value="10.0">10.0 Bar</option>
-                  </select>
+                  <input type="number" id="boilerA_pres_SV" placeholder="E.g., 8.2" step="0.1" inputmode="decimal" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-1.5 text-xs font-bold text-white focus:outline-none focus:border-cyan-500">
                 </div>
               </div>
               <div class="grid grid-cols-2 gap-2">
@@ -229,10 +201,8 @@
                   <input type="number" id="boilerA_temp_PV" placeholder="Actual °C" inputmode="numeric" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-1.5 text-xs font-bold text-white focus:outline-none focus:border-cyan-500">
                 </div>
                 <div>
-                  <label class="text-[9px] font-black text-slate-400 uppercase tracking-wider">Furnace Temp SV</label>
-                  <select id="boilerA_temp_SV" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-2 py-1.5 text-xs font-bold text-white focus:outline-none focus:border-cyan-500">
-                    <option value="350">350°C</option><option value="450">450°C</option><option value="550">550°C</option><option value="650">650°C</option>
-                  </select>
+                  <label class="text-[9px] font-black text-slate-500 uppercase tracking-wider">Furnace Temp SV</label>
+                  <div class="w-full bg-slate-900/80 border border-slate-800 text-amber-500 rounded-xl px-3 py-1.5 text-xs font-black select-none">750 °C (FIXED)</div>
                 </div>
               </div>
             </div>
@@ -254,9 +224,7 @@
                 </div>
                 <div>
                   <label class="text-[9px] font-black text-slate-400 uppercase tracking-wider">Steam Pres. SV</label>
-                  <select id="boilerB_pres_SV" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-2 py-1.5 text-xs font-bold text-white focus:outline-none focus:border-emerald-500">
-                    <option value="1.0">1.0 Bar</option><option value="2.0">2.0 Bar</option><option value="3.0">3.0 Bar</option><option value="4.0">4.0 Bar</option><option value="5.0">5.0 Bar</option><option value="6.0">6.0 Bar</option><option value="7.0">7.0 Bar</option><option value="8.0">8.0 Bar</option><option value="9.0">9.0 Bar</option><option value="10.0">10.0 Bar</option>
-                  </select>
+                  <input type="number" id="boilerB_pres_SV" placeholder="E.g., 9.1" step="0.1" inputmode="decimal" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-1.5 text-xs font-bold text-white focus:outline-none focus:border-emerald-500">
                 </div>
               </div>
               <div class="grid grid-cols-2 gap-2">
@@ -265,10 +233,8 @@
                   <input type="number" id="boilerB_temp_PV" placeholder="Actual °C" inputmode="numeric" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-1.5 text-xs font-bold text-white focus:outline-none focus:border-emerald-500">
                 </div>
                 <div>
-                  <label class="text-[9px] font-black text-slate-400 uppercase tracking-wider">Furnace Temp SV</label>
-                  <select id="boilerB_temp_SV" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-2 py-1.5 text-xs font-bold text-white focus:outline-none focus:border-emerald-500">
-                    <option value="350">350°C</option><option value="450">450°C</option><option value="550">550°C</option><option value="650">650°C</option>
-                  </select>
+                  <label class="text-[9px] font-black text-slate-500 uppercase tracking-wider">Furnace Temp SV</label>
+                  <div class="w-full bg-slate-900/80 border border-slate-800 text-amber-500 rounded-xl px-3 py-1.5 text-xs font-black select-none">750 °C (FIXED)</div>
                 </div>
               </div>
             </div>
@@ -289,10 +255,8 @@
               </div>
 
               <div>
-                <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-1">Steam Pressure SV (Target)</label>
-                <select id="csg_pres_SV" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2.5 text-xs font-bold text-white focus:outline-none focus:border-purple-500">
-                  <option value="1">1 Bar</option><option value="2">2 Bars</option><option value="3">3 Bars</option><option value="4">4 Bars</option><option value="5">5 Bars</option><option value="6">6 Bars</option><option value="7">7 Bars</option><option value="8">8 Bars</option><option value="9">9 Bars</option><option value="10">10 Bars</option>
-                </select>
+                <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-1">Steam Pressure SV (Target Bars)</label>
+                <input type="number" id="csg_pres_SV" placeholder="E.g., 4.5" step="0.1" inputmode="decimal" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 text-xs font-bold text-white focus:outline-none focus:border-purple-500 shadow-inner">
               </div>
 
               <div>
@@ -349,45 +313,55 @@
           
           <div class="snap-panel grid grid-cols-1 md:grid-cols-2 gap-4 pr-1">
             
-            <div class="bg-slate-950/60 p-4 rounded-2xl border border-slate-800 flex flex-col gap-3 relative">
-              <div class="flex justify-between items-center">
-                <span class="text-xs font-black tracking-wider text-cyan-400">BOILER A STATUS</span>
-                <span id="badgeA_role" class="text-[9px] font-extrabold px-2 py-0.5 rounded bg-slate-800 text-slate-400 tracking-wider">OFFLINE</span>
-              </div>
-              <div class="bg-slate-900/50 p-3 rounded-xl border border-slate-800/80">
-                <p class="text-[9px] font-black text-slate-500 uppercase tracking-widest">💨 Steam Pressure</p>
-                <div class="flex justify-between items-baseline mt-1">
-                  <div><span class="text-[10px] text-slate-400">PV:</span> <span id="dispA_pres_PV" class="text-xl font-black text-white">0.0</span> <span class="text-[10px] text-slate-500">Bar</span></div>
-                  <div><span class="text-[10px] text-slate-400">SV:</span> <span id="dispA_pres_SV" class="text-xs font-bold text-slate-400">0.0</span> <span class="text-[10px] text-slate-500">Bar</span></div>
+            <div class="bg-slate-950/60 p-4 rounded-2xl border border-slate-800 flex flex-col gap-3 relative justify-between">
+              <div>
+                <div class="flex justify-between items-center mb-2">
+                  <span class="text-xs font-black tracking-wider text-cyan-400">BOILER A STATUS</span>
+                  <span id="badgeA_role" class="text-[9px] font-extrabold px-2 py-0.5 rounded bg-slate-800 text-slate-400 tracking-wider">OFFLINE</span>
+                </div>
+                <div class="bg-slate-900/50 p-3 rounded-xl border border-slate-800/80 mb-2">
+                  <p class="text-[9px] font-black text-slate-500 uppercase tracking-widest">💨 Steam Pressure</p>
+                  <div class="flex justify-between items-baseline mt-1">
+                    <div><span class="text-[10px] text-slate-400">PV:</span> <span id="dispA_pres_PV" class="text-xl font-black text-white">0.0</span> <span class="text-[10px] text-slate-500">Bar</span></div>
+                    <div><span class="text-[10px] text-slate-400">SV:</span> <span id="dispA_pres_SV" class="text-xs font-bold text-slate-400">0.0</span> <span class="text-[10px] text-slate-500">Bar</span></div>
+                  </div>
+                </div>
+                <div class="bg-slate-900/50 p-3 rounded-xl border border-slate-800/80">
+                  <p class="text-[9px] font-black text-slate-500 uppercase tracking-widest">🔥 Furnace Temperature</p>
+                  <div class="flex justify-between items-baseline mt-1">
+                    <div><span class="text-[10px] text-slate-400">PV:</span> <span id="dispA_temp_PV" class="text-xl font-black text-cyan-400">0</span> <span class="text-[10px] text-slate-500">°C</span></div>
+                    <div><span class="text-[10px] text-slate-400">SV:</span> <span id="dispA_temp_SV" class="text-xs font-bold text-slate-400">0</span> <span class="text-[10px] text-slate-500">°C</span></div>
+                  </div>
                 </div>
               </div>
-              <div class="bg-slate-900/50 p-3 rounded-xl border border-slate-800/80">
-                <p class="text-[9px] font-black text-slate-500 uppercase tracking-widest">🔥 Furnace Temperature</p>
-                <div class="flex justify-between items-baseline mt-1">
-                  <div><span class="text-[10px] text-slate-400">PV:</span> <span id="dispA_temp_PV" class="text-xl font-black text-cyan-400">0</span> <span class="text-[10px] text-slate-500">°C</span></div>
-                  <div><span class="text-[10px] text-slate-400">SV:</span> <span id="dispA_temp_SV" class="text-xs font-bold text-slate-400">0</span> <span class="text-[10px] text-slate-500">°C</span></div>
-                </div>
+              <div class="text-[9px] text-slate-500 font-mono mt-2 pt-2 border-t border-slate-900/60 uppercase">
+                Updated by: <span id="dispA_operator" class="text-amber-400 font-bold">N/A</span>
               </div>
             </div>
 
-            <div class="bg-slate-950/60 p-4 rounded-2xl border border-slate-800 flex flex-col gap-3 relative">
-              <div class="flex justify-between items-center">
-                <span class="text-xs font-black tracking-wider text-emerald-400">BOILER B STATUS</span>
-                <span id="badgeB_role" class="text-[9px] font-extrabold px-2 py-0.5 rounded bg-slate-800 text-slate-400 tracking-wider">OFFLINE</span>
-              </div>
-              <div class="bg-slate-900/50 p-3 rounded-xl border border-slate-800/80">
-                <p class="text-[9px] font-black text-slate-500 uppercase tracking-widest">💨 Steam Pressure</p>
-                <div class="flex justify-between items-baseline mt-1">
-                  <div><span class="text-[10px] text-slate-400">PV:</span> <span id="dispB_pres_PV" class="text-xl font-black text-white">0.0</span> <span class="text-[10px] text-slate-500">Bar</span></div>
-                  <div><span class="text-[10px] text-slate-400">SV:</span> <span id="dispB_pres_SV" class="text-xs font-bold text-slate-400">0.0</span> <span class="text-[10px] text-slate-500">Bar</span></div>
+            <div class="bg-slate-950/60 p-4 rounded-2xl border border-slate-800 flex flex-col gap-3 relative justify-between">
+              <div>
+                <div class="flex justify-between items-center mb-2">
+                  <span class="text-xs font-black tracking-wider text-emerald-400">BOILER B STATUS</span>
+                  <span id="badgeB_role" class="text-[9px] font-extrabold px-2 py-0.5 rounded bg-slate-800 text-slate-400 tracking-wider">OFFLINE</span>
+                </div>
+                <div class="bg-slate-900/50 p-3 rounded-xl border border-slate-800/80 mb-2">
+                  <p class="text-[9px] font-black text-slate-500 uppercase tracking-widest">💨 Steam Pressure</p>
+                  <div class="flex justify-between items-baseline mt-1">
+                    <div><span class="text-[10px] text-slate-400">PV:</span> <span id="dispB_pres_PV" class="text-xl font-black text-white">0.0</span> <span class="text-[10px] text-slate-500">Bar</span></div>
+                    <div><span class="text-[10px] text-slate-400">SV:</span> <span id="dispB_pres_SV" class="text-xs font-bold text-slate-400">0.0</span> <span class="text-[10px] text-slate-500">Bar</span></div>
+                  </div>
+                </div>
+                <div class="bg-slate-900/50 p-3 rounded-xl border border-slate-800/80">
+                  <p class="text-[9px] font-black text-slate-500 uppercase tracking-widest">🔥 Furnace Temperature</p>
+                  <div class="flex justify-between items-baseline mt-1">
+                    <div><span class="text-[10px] text-slate-400">PV:</span> <span id="dispB_temp_PV" class="text-xl font-black text-emerald-400">0</span> <span class="text-[10px] text-slate-500">°C</span></div>
+                    <div><span class="text-[10px] text-slate-400">SV:</span> <span id="dispB_temp_SV" class="text-xs font-bold text-slate-400">0</span> <span class="text-[10px] text-slate-500">°C</span></div>
+                  </div>
                 </div>
               </div>
-              <div class="bg-slate-900/50 p-3 rounded-xl border border-slate-800/80">
-                <p class="text-[9px] font-black text-slate-500 uppercase tracking-widest">🔥 Furnace Temperature</p>
-                <div class="flex justify-between items-baseline mt-1">
-                  <div><span class="text-[10px] text-slate-400">PV:</span> <span id="dispB_temp_PV" class="text-xl font-black text-emerald-400">0</span> <span class="text-[10px] text-slate-500">°C</span></div>
-                  <div><span class="text-[10px] text-slate-400">SV:</span> <span id="dispB_temp_SV" class="text-xs font-bold text-slate-400">0</span> <span class="text-[10px] text-slate-500">°C</span></div>
-                </div>
+              <div class="text-[9px] text-slate-500 font-mono mt-2 pt-2 border-t border-slate-900/60 uppercase">
+                Updated by: <span id="dispB_operator" class="text-amber-400 font-bold">N/A</span>
               </div>
             </div>
           </div>
@@ -411,7 +385,7 @@
                 <div class="bg-slate-900/50 p-4 rounded-xl border border-slate-800 flex flex-col gap-1">
                   <span class="text-[9px] font-bold text-slate-500 uppercase tracking-wider">Steam Setpoint (SV)</span>
                   <div class="flex items-baseline gap-1 mt-1">
-                    <span id="dispCsg_pres_SV" class="text-2xl font-black text-purple-400">0</span>
+                    <span id="dispCsg_pres_SV" class="text-2xl font-black text-purple-400">0.0</span>
                     <span class="text-xs font-bold text-slate-500">Bars Target</span>
                   </div>
                 </div>
@@ -430,7 +404,7 @@
               </div>
 
               <div class="mt-auto pt-4 border-t border-slate-900/60 flex items-center justify-between text-[10px] text-slate-500 font-mono">
-                <span>STATION RECORD COMPONENT ID: csg</span>
+                <span>UPDATED BY: <span id="dispCsg_operator" class="text-purple-400 font-bold uppercase">N/A</span></span>
                 <span>LAST UPDATE: <span id="dispCsg_updated_at" class="text-slate-300 font-bold">N/A</span></span>
               </div>
             </div>
@@ -447,7 +421,6 @@
   </div>
 
   <script>
-    // --- DATABASE CLOUD SYNC SETTINGS ---
     const SB_URL = "https://qbeacrpoyfacgmbzxjcu.supabase.co";
     const SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFiZWFjcnBveWZhY2dtYnp4amN1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDg2NTM5NTIsImV4cCI6MjA2NDIyOTk1Mn0.6kfxKLJxidW4BcqsMJte61AtzydrTW-1ZJIJytiUBt4";
     
@@ -457,39 +430,24 @@
       "Content-Type": "application/json"
     };
 
-    // --- APPLICATION STATE CONSTANTS & VERSION MANAGEMENT ---
     let deferredPrompt = null;
-    const CURRENT_VERSION_KEY = "abn_steam_v2.0"; // Palitan ito para mag-trigger ang "What's New Log" modal
-    
+    const CURRENT_VERSION_KEY = "abn_steam_v2.5";
     let currentInputPin = "";
-    let logoutTimer = null;
-    const INACTIVITY_TIMEOUT = 12 * 60 * 60 * 1000; // 12-Hour strict runtime rollover
 
-    // --- INITIALIZATION ENTRY POINT ---
     window.addEventListener('DOMContentLoaded', () => {
       checkStoredSession();
       checkWhatsNewTrigger();
-      
-      // Setup window trackers to refresh the login security lifetime
-      ['click', 'touchstart', 'mousemove', 'keydown'].forEach(evt => {
-        window.addEventListener(evt, resetInactivityTimer);
-      });
     });
 
     // ================= PWA LOGIC, FORCE INSTALLATION & LIVE AUTO UPDATES =================
-    
     window.addEventListener('beforeinstallprompt', (e) => {
-      // Pigilan ang default system banner ng browser
       e.preventDefault();
       deferredPrompt = e;
-      
-      // Kung hindi pa naka-standalone/installed web app, harangan ang UI view area
       if (!window.matchMedia('(display-mode: standalone)').matches) {
         document.getElementById('forceInstallOverlay').classList.remove('hidden');
       }
     });
 
-    // Pangasiwaan ang native chrome installation handler button
     document.getElementById('btnPwaInstall').addEventListener('click', async () => {
       if (deferredPrompt) {
         deferredPrompt.prompt();
@@ -501,39 +459,28 @@
       }
     });
 
-    // PWA iOS Custom Safari Detection Guide
-    const isIosDevice = () => {
-      return /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-    };
+    const isIosDevice = () => /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
     if (isIosDevice() && !window.matchMedia('(display-mode: standalone)').matches) {
       document.getElementById('forceInstallOverlay').classList.remove('hidden');
       document.getElementById('btnPwaInstall').classList.add('hidden');
       document.getElementById('iosInstructions').classList.remove('hidden');
     }
 
-    // INTERFACE REGISTER SERVICE WORKER ENGINE
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('sw.js').then((reg) => {
-          
-          // Makinig kung nakakita ang local client ng fresh code push updates sa network files
           reg.addEventListener('updatefound', () => {
             const freshWorker = reg.installing;
             freshWorker.addEventListener('statechange', () => {
               if (freshWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                // May bagong network file patch! Harangan ang layout at mag-update
                 document.getElementById('appUpdatingOverlay').classList.remove('hidden');
-                setTimeout(() => {
-                  freshWorker.postMessage({ action: 'skipWaiting' });
-                }, 1000);
+                setTimeout(() => { freshWorker.postMessage({ action: 'skipWaiting' }); }, 1000);
               }
             });
           });
-
         }).catch((err) => console.error('Service Worker Registration Blocked:', err));
       });
 
-      // Kusang magre-reload ang system page kapag bago na ang active local caching controller
       let systemRefreshing = false;
       navigator.serviceWorker.addEventListener('controllerchange', () => {
         if (!systemRefreshing) {
@@ -544,122 +491,75 @@
       });
     }
 
-    // WHAT'S NEW SYSTEM DIALOGUE MANAGER
     function checkWhatsNewTrigger() {
       const cachedVersion = localStorage.getItem('abn_app_build_version');
       const forceTrigger = localStorage.getItem('forceShowUpdatePatchNotes');
-
       if (cachedVersion !== CURRENT_VERSION_KEY || forceTrigger === 'true') {
         document.getElementById('whatsNewModal').classList.remove('hidden');
         localStorage.setItem('abn_app_build_version', CURRENT_VERSION_KEY);
         localStorage.removeItem('forceShowUpdatePatchNotes');
       }
     }
+    function closeWhatsNew() { document.getElementById('whatsNewModal').classList.add('hidden'); }
 
-    function closeWhatsNew() {
-      document.getElementById('whatsNewModal').classList.add('hidden');
-    }
-
-    // ================= ORIGINAL SYSTEM LOGIC METHODS =================
-
-    // PIN GATEWAY MECHANICS
+    // ================= SECURITY & ACCOUNT RUNTIME RETENTION =================
     function pressPin(digit) {
-      if(currentInputPin.length < 4) {
-        currentInputPin += digit;
-        updatePinDisplay();
-      }
-      if(currentInputPin.length === 4) {
-        validatePinAgainstCloud();
-      }
+      if(currentInputPin.length < 4) { currentInputPin += digit; updatePinDisplay(); }
+      if(currentInputPin.length === 4) { validatePinAgainstCloud(); }
     }
-
-    function clearPin() {
-      currentInputPin = "";
-      updatePinDisplay();
-      clearStatusMessage();
-    }
-
-    function backspacePin() {
-      currentInputPin = currentInputPin.slice(0, -1);
-      updatePinDisplay();
-      clearStatusMessage();
-    }
-
+    function clearPin() { currentInputPin = ""; updatePinDisplay(); clearStatusMessage(); }
+    function backspacePin() { currentInputPin = currentInputPin.slice(0, -1); updatePinDisplay(); clearStatusMessage(); }
+    
     function updatePinDisplay() {
       const maskEl = document.getElementById('pinMasked');
       maskEl.innerHTML = "•".repeat(currentInputPin.length) + "•".repeat(4 - currentInputPin.length);
-      maskEl.className = currentInputPin.length > 0 
-        ? "text-3xl font-black text-cyan-400 tracking-[0.4em] h-9 flex items-center justify-center animate-pulse" 
-        : "text-3xl font-black text-slate-500 tracking-[0.4em] h-9 flex items-center justify-center";
     }
-
     function clearStatusMessage() {
-      const msgEl = document.getElementById('pinStatusMsg');
-      msgEl.innerText = "Enter Factory Passcode";
-      msgEl.className = "text-[10px] uppercase tracking-wider text-slate-500 font-bold mt-1 text-center h-4";
+      document.getElementById('pinStatusMsg').innerText = "Enter Factory Passcode";
+      document.getElementById('pinStatusMsg').className = "text-[10px] uppercase tracking-wider text-slate-500 font-bold mt-1 text-center h-4";
     }
 
-    // SUPABASE SECURITY AUTHORIZATION LOOKUP
     async function validatePinAgainstCloud() {
       const msgEl = document.getElementById('pinStatusMsg');
       msgEl.innerText = "Verifying Credentials...";
-      msgEl.className = "text-[10px] uppercase tracking-wider text-amber-400 font-bold mt-1 text-center h-4 animate-pulse";
-
       try {
         const response = await fetch(`${SB_URL}/rest/v1/access_codes?pin_code=eq.${currentInputPin}&select=role`, {
-          method: "GET",
-          headers: headers
+          method: "GET", headers: headers
         });
-
-        if (!response.ok) throw new Error("Network Response Failure");
         const data = await response.json();
-
         if (data && data.length > 0) {
-          const matchedRole = data[0].role; // 'viewer' o 'operator'
-          storeSession(matchedRole);
+          storeSession(data[0].role);
         } else {
           msgEl.innerText = "❌ Access Denied: Invalid PIN";
-          msgEl.className = "text-[10px] uppercase tracking-wider text-red-500 font-black mt-1 text-center h-4";
           currentInputPin = "";
           setTimeout(updatePinDisplay, 600);
         }
       } catch (err) {
-        console.error("Authorization Error:", err);
         msgEl.innerText = "🚨 Cloud Auth Server Offline";
-        msgEl.className = "text-[10px] uppercase tracking-wider text-red-400 font-black mt-1 text-center h-4";
       }
     }
 
-    // MANAGEMENT OF STORAGE VALUES
     function storeSession(role) {
       localStorage.setItem("role", role);
-      localStorage.setItem("sessionTimestamp", Date.now().toString());
       applyRolePrivileges(role);
     }
 
     function checkStoredSession() {
       const role = localStorage.getItem("role");
-      const sessionTime = localStorage.getItem("sessionTimestamp");
-
-      if (role && sessionTime) {
-        if (Date.now() - parseInt(sessionTime) < INACTIVITY_TIMEOUT) {
-          applyRolePrivileges(role);
-          return;
-        }
+      if (role) {
+        applyRolePrivileges(role);
+      } else {
+        logoutSession();
       }
-      logoutSession();
     }
 
     function applyRolePrivileges(role) {
       document.getElementById('pinGateway').classList.add('hidden');
       document.getElementById('appContainer').classList.remove('hidden');
-
-      // Reset badges
       document.getElementById('roleBadgeOperator').classList.add('hidden');
       document.getElementById('roleBadgeSupervisor').classList.add('hidden');
       document.getElementById('operatorViewBlock').classList.add('hidden');
       
-      // Remap grid elements dynamically
       const dashBlock = document.getElementById('supervisorDashboardViewBlock');
       dashBlock.className = "w-full rounded-3xl bg-slate-900 border border-slate-800 p-6 shadow-xl flex flex-col gap-4 lg:col-span-12";
 
@@ -667,43 +567,46 @@
         document.getElementById('roleBadgeOperator').classList.remove('hidden');
         document.getElementById('operatorViewBlock').classList.remove('hidden');
         dashBlock.className = "w-full rounded-3xl bg-slate-900 border border-slate-800 p-6 shadow-xl flex flex-col gap-4 lg:col-span-7";
+        
+        // Operator Identification Check
+        const savedName = localStorage.getItem("operator_name");
+        if (!savedName) {
+          document.getElementById('operatorNameGateway').classList.remove('hidden');
+        } else {
+          document.getElementById('labelActiveOperator').innerText = savedName;
+          initializeOperatorFormValues(); // Hugutin ang huling values para hindi blanko ang fields
+        }
       } else if (role === 'viewer' || role === 'supervisor') {
         document.getElementById('roleBadgeSupervisor').classList.remove('hidden');
       }
-
-      resetInactivityTimer();
       startPollingLiveFeed();
+    }
+
+    function submitOperatorName() {
+      const nameInput = document.getElementById('inputOperatorName').value.trim();
+      if(nameInput.length < 2) { alert("Pakisulat ang wastong pangalan."); return; }
+      localStorage.setItem("operator_name", nameInput);
+      document.getElementById('labelActiveOperator').innerText = nameInput;
+      document.getElementById('operatorNameGateway').classList.add('hidden');
+      initializeOperatorFormValues();
     }
 
     function logoutSession() {
       localStorage.removeItem("role");
-      localStorage.removeItem("sessionTimestamp");
+      localStorage.removeItem("operator_name");
       document.getElementById('appContainer').classList.add('hidden');
+      document.getElementById('operatorNameGateway').classList.add('hidden');
       document.getElementById('pinGateway').classList.remove('hidden');
       clearPin();
       stopPollingLiveFeed();
     }
 
-    function resetInactivityTimer() {
-      if (!localStorage.getItem("role")) return;
-      clearTimeout(logoutTimer);
-      logoutTimer = setTimeout(() => {
-        console.warn("Session expired due to strict factory runtime rollover rules.");
-        logoutSession();
-      }, INACTIVITY_TIMEOUT);
-    }
-
-    // CAROUSEL INDICATION SYNC SCRIPTS
     function syncSwipeIndicator(containerId, dot1Id, dot2Id) {
       const container = document.getElementById(containerId);
       const dot1 = document.getElementById(dot1Id);
       const dot2 = document.getElementById(dot2Id);
       if (!container || !dot1 || !dot2) return;
-
-      const position = container.scrollLeft;
-      const width = container.clientWidth;
-
-      if (position >= width * 0.5) {
+      if (container.scrollLeft >= container.clientWidth * 0.5) {
         dot1.className = "w-2 h-2 rounded-full transition-all duration-300 bg-slate-700";
         dot2.className = "w-2 h-2 rounded-full transition-all duration-300 bg-cyan-400";
       } else {
@@ -712,56 +615,79 @@
       }
     }
 
-    // AUTOMATED POLLING & BATCH DATA OVERVIEW PACKETS
+    // ================= AUTOMATED FETCH AND PERSISTENCE ENGINE =================
     let pollingWorkerInterval = null;
 
     function startPollingLiveFeed() {
       fetchDashboardData();
       pollingWorkerInterval = setInterval(fetchDashboardData, 5000);
     }
+    function stopPollingLiveFeed() { clearInterval(pollingWorkerInterval); }
 
-    function stopPollingLiveFeed() {
-      clearInterval(pollingWorkerInterval);
+    // Kinukuha ang pinakahuling data kapag nagbukas ang operator para hindi ito maging default o blanko
+    async function initializeOperatorFormValues() {
+      try {
+        const response = await fetch(`${SB_URL}/rest/v1/boiler_status?select=*`, { method: "GET", headers: headers });
+        if (!response.ok) return;
+        const data = await response.json();
+        data.forEach(node => {
+          if (node.id === 'boiler_a') {
+            document.getElementById('boilerA_pres_PV').value = node.pres_pv || "";
+            document.getElementById('boilerA_pres_SV').value = node.pres_sv || "";
+            document.getElementById('boilerA_temp_PV').value = node.temp_pv || "";
+            if(node.role === 'BACKUP') document.getElementById('roleA_backup').checked = true;
+          }
+          if (node.id === 'boiler_b') {
+            document.getElementById('boilerB_pres_PV').value = node.pres_pv || "";
+            document.getElementById('boilerB_pres_SV').value = node.pres_sv || "";
+            document.getElementById('boilerB_temp_PV').value = node.temp_pv || "";
+            if(node.role === 'MAIN') document.getElementById('roleB_main').checked = true;
+          }
+          if (node.id === 'csg') {
+            document.getElementById('csg_pres_PV').value = node.pres_pv || "";
+            document.getElementById('csg_pres_SV').value = node.pres_sv || "";
+            document.getElementById('csg_product_name').value = node.product_name || "VMR";
+            if(node.steam_mode === '7 BARS') document.getElementById('mode_7bar').checked = true;
+          }
+        });
+      } catch (err) { console.error("Error setting persistent initial inputs:", err); }
     }
 
     async function fetchDashboardData() {
       const stampEl = document.getElementById('liveTimestamp');
       try {
-        const response = await fetch(`${SB_URL}/rest/v1/boiler_status?select=*`, {
-          method: "GET",
-          headers: headers
-        });
+        const response = await fetch(`${SB_URL}/rest/v1/boiler_status?select=*`, { method: "GET", headers: headers });
         if (!response.ok) throw new Error("Fetch Error");
         const data = await response.json();
 
         data.forEach(node => {
+          const currentOp = node.operator_name || 'N/A';
           if (node.id === 'boiler_a') {
             document.getElementById('dispA_pres_PV').innerText = parseFloat(node.pres_pv || 0).toFixed(1);
             document.getElementById('dispA_pres_SV').innerText = parseFloat(node.pres_sv || 0).toFixed(1);
             document.getElementById('dispA_temp_PV').innerText = parseInt(node.temp_pv || 0);
             document.getElementById('dispA_temp_SV').innerText = parseInt(node.temp_sv || 0);
+            document.getElementById('dispA_operator').innerText = currentOp;
             const badge = document.getElementById('badgeA_role');
             badge.innerText = node.role || 'OFFLINE';
-            badge.className = node.role === 'MAIN' 
-              ? "text-[9px] font-extrabold px-2 py-0.5 rounded bg-cyan-950 text-cyan-400 border border-cyan-800/40 tracking-wider" 
-              : "text-[9px] font-extrabold px-2 py-0.5 rounded bg-slate-800 text-slate-400 tracking-wider";
+            badge.className = node.role === 'MAIN' ? "text-[9px] font-extrabold px-2 py-0.5 rounded bg-cyan-950 text-cyan-400 border border-cyan-800/40 tracking-wider" : "text-[9px] font-extrabold px-2 py-0.5 rounded bg-slate-800 text-slate-400 tracking-wider";
           }
           if (node.id === 'boiler_b') {
             document.getElementById('dispB_pres_PV').innerText = parseFloat(node.pres_pv || 0).toFixed(1);
             document.getElementById('dispB_pres_SV').innerText = parseFloat(node.pres_sv || 0).toFixed(1);
             document.getElementById('dispB_temp_PV').innerText = parseInt(node.temp_pv || 0);
             document.getElementById('dispB_temp_SV').innerText = parseInt(node.temp_sv || 0);
+            document.getElementById('dispB_operator').innerText = currentOp;
             const badge = document.getElementById('badgeB_role');
             badge.innerText = node.role || 'OFFLINE';
-            badge.className = node.role === 'MAIN' 
-              ? "text-[9px] font-extrabold px-2 py-0.5 rounded bg-emerald-950 text-emerald-400 border border-emerald-800/40 tracking-wider" 
-              : "text-[9px] font-extrabold px-2 py-0.5 rounded bg-slate-800 text-slate-400 tracking-wider";
+            badge.className = node.role === 'MAIN' ? "text-[9px] font-extrabold px-2 py-0.5 rounded bg-emerald-950 text-emerald-400 border border-emerald-800/40 tracking-wider" : "text-[9px] font-extrabold px-2 py-0.5 rounded bg-slate-800 text-slate-400 tracking-wider";
           }
           if (node.id === 'csg') {
             document.getElementById('dispCsg_pres_PV').innerText = parseFloat(node.pres_pv || 0).toFixed(2);
-            document.getElementById('dispCsg_pres_SV').innerText = parseInt(node.pres_sv || 0);
+            document.getElementById('dispCsg_pres_SV').innerText = parseFloat(node.pres_sv || 0).toFixed(1);
             document.getElementById('dispCsg_product_name').innerText = node.product_name || 'NOT CHOSEN';
             document.getElementById('dispCsg_steam_mode').innerText = node.steam_mode || 'UNALLOCATED';
+            document.getElementById('dispCsg_operator').innerText = currentOp;
             
             if (node.updated_at) {
               const timeFormatted = new Date(node.updated_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', second:'2-digit'});
@@ -769,76 +695,99 @@
             }
           }
         });
-
         stampEl.innerText = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
         stampEl.className = "text-emerald-400 font-bold";
       } catch (err) {
-        console.error("Dashboard Sync Error:", err);
-        stampEl.innerText = "Offline";
-        stampEl.className = "text-red-500 font-bold";
+        stampEl.innerText = "Offline"; stampEl.className = "text-red-500 font-bold";
       }
     }
 
-  // 2. MAG-SA-SAVE NG DATA PADIREKTA SA SUPABASE
-async function saveAllToSupabase() {
-  const saveBtn = document.getElementById('saveBtn');
-  saveBtn.innerText = "⏳ Syncing to Cloud...";
-  saveBtn.disabled = true;
+    // ================= BATCH UPSERT ALL 3 NODES (A, B, CSG) =================
+    async function saveAllToSupabase() {
+      const saveBtn = document.getElementById('saveBtn');
+      saveBtn.innerText = "⏳ Syncing to Cloud...";
+      saveBtn.disabled = true;
 
-  const roleA = document.querySelector('input[name="boilerA_role"]:checked').value;
-  const roleB = document.querySelector('input[name="boilerB_role"]:checked').value;
+      const currentOpName = localStorage.getItem("operator_name") || "UNKNOWN";
+      const roleA = document.querySelector('input[name="boilerA_role"]:checked').value;
+      const roleB = document.querySelector('input[name="boilerB_role"]:checked').value;
 
-  // Ligtas na pag-convert ng kuryente at temperatura upang maiwasan ang NaN
-  const presA_raw = parseFloat(document.getElementById('boilerA_pres_PV').value);
-  const tempA_raw = parseInt(document.getElementById('boilerA_temp_PV').value);
-  const presB_raw = parseFloat(document.getElementById('boilerB_pres_PV').value);
-  const tempB_raw = parseInt(document.getElementById('boilerB_temp_PV').value);
+      const presA_raw = parseFloat(document.getElementById('boilerA_pres_PV').value);
+      const svA_raw   = parseFloat(document.getElementById('boilerA_pres_SV').value);
+      const tempA_raw = parseInt(document.getElementById('boilerA_temp_PV').value);
 
-  const payload = [
-    {
-      id: "boiler_a",
-      boiler_name: "Boiler A",
-      role: roleA,
-      pres_pv: isNaN(presA_raw) ? 0.0 : presA_raw,
-      pres_sv: parseFloat(document.getElementById('boilerA_pres_SV').value) || 1.0,
-      temp_pv: isNaN(tempA_raw) ? 0 : tempA_raw,
-      temp_sv: parseInt(document.getElementById('boilerA_temp_SV').value) || 350,
-      updated_at: new Date().toISOString()
-    },
-    {
-      id: "boiler_b",
-      boiler_name: "Boiler B",
-      role: roleB,
-      pres_pv: isNaN(presB_raw) ? 0.0 : presB_raw,
-      pres_sv: parseFloat(document.getElementById('boilerB_pres_SV').value) || 1.0,
-      temp_pv: isNaN(tempB_raw) ? 0 : tempB_raw,
-      temp_sv: parseInt(document.getElementById('boilerB_temp_SV').value) || 350,
-      updated_at: new Date().toISOString()
+      const presB_raw = parseFloat(document.getElementById('boilerB_pres_PV').value);
+      const svB_raw   = parseFloat(document.getElementById('boilerB_pres_SV').value);
+      const tempB_raw = parseInt(document.getElementById('boilerB_temp_PV').value);
+
+      const csgPres_raw = parseFloat(document.getElementById('csg_pres_PV').value);
+      const csgSv_raw   = parseFloat(document.getElementById('csg_pres_SV').value);
+      const csgProduct  = document.getElementById('csg_product_name').value;
+      const csgMode     = document.querySelector('input[name="csg_steam_mode"]:checked').value;
+
+      const timestampISO = new Date().toISOString();
+
+      // BATCH PAYLOAD KASAMA ANG BOILER A, BOILER B, AT CSG STATION
+      const payload = [
+        {
+          id: "boiler_a",
+          boiler_name: "Boiler A",
+          role: roleA,
+          pres_pv: isNaN(presA_raw) ? 0.0 : presA_raw,
+          pres_sv: isNaN(svA_raw) ? 1.0 : svA_raw,
+          temp_pv: isNaN(tempA_raw) ? 0 : tempA_raw,
+          temp_sv: 750, // Fixed 750 target
+          operator_name: currentOpName,
+          updated_at: timestampISO
+        },
+        {
+          id: "boiler_b",
+          boiler_name: "Boiler B",
+          role: roleB,
+          pres_pv: isNaN(presB_raw) ? 0.0 : presB_raw,
+          pres_sv: isNaN(svB_raw) ? 1.0 : svB_raw,
+          temp_pv: isNaN(tempB_raw) ? 0 : tempB_raw,
+          temp_sv: 750, // Fixed 750 target
+          operator_name: currentOpName,
+          updated_at: timestampISO
+        },
+        {
+          id: "csg",
+          boiler_name: "Clean Steam Generator",
+          role: "MAIN",
+          pres_pv: isNaN(csgPres_raw) ? 0.00 : csgPres_raw,
+          pres_sv: isNaN(csgSv_raw) ? 4.0 : csgSv_raw,
+          temp_pv: 0,
+          temp_sv: 0,
+          product_name: csgProduct,
+          steam_mode: csgMode,
+          operator_name: currentOpName,
+          updated_at: timestampISO
+        }
+      ];
+
+      try {
+        const response = await fetch(`${SB_URL}/rest/v1/boiler_status`, {
+          method: "POST",
+          headers: { ...headers, "Prefer": "resolution=merge-duplicates" },
+          body: JSON.stringify(payload)
+        });
+
+        if (response.ok) {
+          // Humugot agad ng live data matapos mag-save para mag-update agad ang screen
+          await fetchDashboardData(); 
+        } else {
+          const errorData = await response.json();
+          console.error("Supabase Database Error Details:", errorData);
+          alert("Error sa Database: " + (errorData.message || response.statusText));
+        }
+      } catch (error) {
+        console.error("Error saving data to Supabase:", error);
+      } finally {
+        saveBtn.innerText = "💾 Save & Batch Upsert All Stations";
+        saveBtn.disabled = false;
+      }
     }
-  ];
-
-  try {
-    const response = await fetch(`${SB_URL}/rest/v1/boiler_status`, {
-      method: "POST",
-      headers: { ...headers, "Prefer": "resolution=merge-duplicates" },
-      body: JSON.stringify(payload)
-    });
-
-    if (response.ok) {
-      await fetchDashboardData();
-    } else {
-      // Makakatulong ito upang makita ang eksaktong dahilan mula sa Supabase
-      const errorData = await response.json();
-      console.error("Supabase Database Error Details:", errorData);
-      alert("Error sa Database: " + (errorData.message || response.statusText));
-    }
-  } catch (error) {
-    console.error("Error saving data to Supabase:", error);
-  } finally {
-    saveBtn.innerText = "💾 Save & Broadcast Station Data";
-    saveBtn.disabled = false;
-  }
-}
   </script>
 </body>
 </html>
