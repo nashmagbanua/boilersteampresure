@@ -779,64 +779,66 @@
       }
     }
 
-    async function saveAllToSupabase() {
-      const saveBtn = document.getElementById('saveBtn');
-      saveBtn.innerText = "⚡ Batch Committing Packets...";
-      saveBtn.disabled = true;
+  // 2. MAG-SA-SAVE NG DATA PADIREKTA SA SUPABASE
+async function saveAllToSupabase() {
+  const saveBtn = document.getElementById('saveBtn');
+  saveBtn.innerText = "⏳ Syncing to Cloud...";
+  saveBtn.disabled = true;
 
-      // Extract form values
-      const boilerA_role = document.querySelector('input[name="boilerA_role"]:checked')?.value || 'MAIN';
-      const boilerA_pres_PV = parseFloat(document.getElementById('boilerA_pres_PV').value) || 0.0;
-      const boilerA_pres_SV = parseFloat(document.getElementById('boilerA_pres_SV').value) || 1.0;
-      const boilerA_temp_PV = parseInt(document.getElementById('boilerA_temp_PV').value) || 0;
-      const boilerA_temp_SV = parseInt(document.getElementById('boilerA_temp_SV').value) || 350;
+  const roleA = document.querySelector('input[name="boilerA_role"]:checked').value;
+  const roleB = document.querySelector('input[name="boilerB_role"]:checked').value;
 
-      const boilerB_role = document.querySelector('input[name="boilerB_role"]:checked')?.value || 'BACKUP';
-      const boilerB_pres_PV = parseFloat(document.getElementById('boilerB_pres_PV').value) || 0.0;
-      const boilerB_pres_SV = parseFloat(document.getElementById('boilerB_pres_SV').value) || 1.0;
-      const boilerB_temp_PV = parseInt(document.getElementById('boilerB_temp_PV').value) || 0;
-      const boilerB_temp_SV = parseInt(document.getElementById('boilerB_temp_SV').value) || 350;
+  // Ligtas na pag-convert ng kuryente at temperatura upang maiwasan ang NaN
+  const presA_raw = parseFloat(document.getElementById('boilerA_pres_PV').value);
+  const tempA_raw = parseInt(document.getElementById('boilerA_temp_PV').value);
+  const presB_raw = parseFloat(document.getElementById('boilerB_pres_PV').value);
+  const tempB_raw = parseInt(document.getElementById('boilerB_temp_PV').value);
 
-      const csg_pres_PV = parseFloat(document.getElementById('csg_pres_PV').value) || 0.0;
-      const csg_pres_SV = parseInt(document.getElementById('csg_pres_SV').value) || 1;
-      const csg_product_name = document.getElementById('csg_product_name').value || 'VMR';
-      const csg_steam_mode = document.querySelector('input[name="csg_steam_mode"]:checked')?.value || '4 BARS';
-
-      const isoTimestamp = new Date().toISOString();
-
-      const payload = [
-        { id: "boiler_a", role: boilerA_role, pres_pv: boilerA_pres_PV, pres_sv: boilerA_pres_SV, temp_pv: boilerA_temp_PV, temp_sv: boilerA_temp_SV, updated_at: isoTimestamp },
-        { id: "boiler_b", role: boilerB_role, pres_pv: boilerB_pres_PV, pres_sv: boilerB_pres_SV, temp_pv: boilerB_temp_PV, temp_sv: boilerB_temp_SV, updated_at: isoTimestamp },
-        { id: "csg", pres_pv: csg_pres_PV, pres_sv: csg_pres_SV, product_name: csg_product_name, steam_mode: csg_steam_mode, updated_at: isoTimestamp }
-      ];
-
-      try {
-        const response = await fetch(`${SB_URL}/rest/v1/boiler_status`, {
-          method: "POST",
-          headers: { ...headers, "Prefer": "resolution=merge-duplicates" },
-          body: JSON.stringify(payload)
-        });
-
-        if (response.ok) {
-          fetchDashboardData();
-          // Clear operational telemetry data inputs safely
-          document.getElementById('boilerA_pres_PV').value = "";
-          document.getElementById('boilerA_temp_PV').value = "";
-          document.getElementById('boilerB_pres_PV').value = "";
-          document.getElementById('boilerB_temp_PV').value = "";
-          document.getElementById('csg_pres_PV').value = "";
-          alert("✅ Batch Upsert Successful! All terminal grids updated.");
-        } else {
-          alert("❌ Server Reject: Check Database Rules.");
-        }
-      } catch (error) {
-        console.error("Error saving data to Supabase:", error);
-        alert("🚨 Sync Failed: Check network terminal connectivity.");
-      } finally {
-        saveBtn.innerText = "💾 Save & Batch Upsert All Stations";
-        saveBtn.disabled = false;
-      }
+  const payload = [
+    {
+      id: "boiler_a",
+      boiler_name: "Boiler A",
+      role: roleA,
+      pres_pv: isNaN(presA_raw) ? 0.0 : presA_raw,
+      pres_sv: parseFloat(document.getElementById('boilerA_pres_SV').value) || 1.0,
+      temp_pv: isNaN(tempA_raw) ? 0 : tempA_raw,
+      temp_sv: parseInt(document.getElementById('boilerA_temp_SV').value) || 350,
+      updated_at: new Date().toISOString()
+    },
+    {
+      id: "boiler_b",
+      boiler_name: "Boiler B",
+      role: roleB,
+      pres_pv: isNaN(presB_raw) ? 0.0 : presB_raw,
+      pres_sv: parseFloat(document.getElementById('boilerB_pres_SV').value) || 1.0,
+      temp_pv: isNaN(tempB_raw) ? 0 : tempB_raw,
+      temp_sv: parseInt(document.getElementById('boilerB_temp_SV').value) || 350,
+      updated_at: new Date().toISOString()
     }
+  ];
+
+  try {
+    const response = await fetch(`${SB_URL}/rest/v1/boiler_status`, {
+      method: "POST",
+      headers: { ...headers, "Prefer": "resolution=merge-duplicates" },
+      body: JSON.stringify(payload)
+    });
+
+    if (response.ok) {
+      await fetchDashboardData();
+    } else {
+      // Makakatulong ito upang makita ang eksaktong dahilan mula sa Supabase
+      const errorData = await response.json();
+      console.error("Supabase Database Error Details:", errorData);
+      alert("Error sa Database: " + (errorData.message || response.statusText));
+    }
+  } catch (error) {
+    console.error("Error saving data to Supabase:", error);
+  } finally {
+    saveBtn.innerText = "💾 Save & Broadcast Station Data";
+    saveBtn.disabled = false;
+  }
+}
   </script>
 </body>
 </html>
