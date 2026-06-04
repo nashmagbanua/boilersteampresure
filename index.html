@@ -1,20 +1,25 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://your-deployment-url.vercel.app/"> <meta property="og:title" content="AB Nutribev - Plant Steam System">
+  <meta property="og:description" content="Real-time Utility Monitoring Portal for Boiler and Clean Steam Generator (CSG) Stations. Built for industrial efficiency.">
+  <meta property="og:image" content="og-preview.png">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="AB Nutribev - Plant Steam System">
+  <meta name="twitter:description" content="Real-time Utility Monitoring Portal for Boiler and Clean Steam Generator (CSG) Stations. Built for industrial efficiency.">
+  <meta name="twitter:image" content="og-preview.png">
   <title>AB Nutribev - Plant Steam System</title>
   
-  <!-- Tailwind CSS Framework -->
   <script src="https://cdn.tailwindcss.com"></script>
   
-  <!-- Industrial & Clean Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Plus+Jakarta+Sans:wght@500;700;800&display=swap" rel="stylesheet">
 
-  <!-- Apple & PWA Capabilities -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="theme-color" content="#0B1220">
@@ -77,14 +82,12 @@
 </head>
 <body class="text-slate-100 min-h-screen flex flex-col relative pb-28">
 
-  <!-- OVERLAY: LOADING/SAVING DATABASE STATE -->
   <div id="loadingOverlay" class="hidden fixed inset-0 z-[10000] bg-slate-950/90 backdrop-blur-md flex flex-col items-center justify-center p-6 text-center">
     <div class="w-16 h-16 border-4 border-slate-800 border-t-blue-500 rounded-full animate-spin mb-4"></div>
     <h3 class="text-lg font-bold uppercase tracking-wider text-slate-200" id="loadingTitle">Saving to Supabase Database</h3>
     <p class="text-xs text-slate-500 mt-1" id="loadingSubtitle">Establishing secure connection parameters with remote server...</p>
   </div>
 
-  <!-- OVERLAY: TRANSACTION SUCCESS ANIMATION -->
   <div id="successAnimation" class="hidden fixed inset-0 z-[10000] bg-slate-950/90 backdrop-blur-md flex flex-col items-center justify-center p-6 text-center">
     <div class="w-20 h-20 bg-emerald-500/10 border-2 border-emerald-500 rounded-full flex items-center justify-center mb-4 scale-75 animate-bounce">
       <svg class="w-10 h-10 text-emerald-400" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24">
@@ -95,13 +98,11 @@
     <p class="text-xs text-slate-400 mt-1">Telemetry parameters updated successfully.</p>
   </div>
 
-  <!-- FLOATING INTERACTIVE TOAST NOTIFICATION -->
   <div id="toastNotification" class="hidden fixed top-6 left-6 right-6 z-[10001] bg-red-500 border border-red-600 text-white p-4 rounded-2xl shadow-2xl flex items-center gap-3 animate-bounce">
     <span class="text-xl">⚠️</span>
     <div class="text-xs font-bold uppercase tracking-wide flex-1" id="toastMessage">Error detected.</div>
   </div>
 
-  <!-- STATION SELECTOR MODAL (Tapping Operator Input) -->
   <div id="stationSelectorModal" class="hidden fixed inset-0 z-[999] modal-overlay flex items-end sm:items-center justify-center p-4">
     <div class="w-full max-w-sm bg-[#111C2E] border border-slate-800 rounded-[32px] p-6 shadow-2xl space-y-4">
       <div class="text-center">
@@ -117,7 +118,6 @@
     </div>
   </div>
 
-  <!-- GLOVE-FRIENDLY AUTH PIN GATEWAY MODAL -->
   <div id="pinGatewayModal" class="hidden fixed inset-0 z-[1000] modal-overlay flex items-center justify-center p-4">
     <div class="w-full max-w-xs bg-[#111C2E] border border-slate-800 rounded-[32px] p-6 shadow-2xl flex flex-col items-center gap-4">
       <div class="text-center">
@@ -125,7 +125,6 @@
         <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wide mt-0.5">Input Security Authorization PIN</h3>
       </div>
       
-      <!-- Keypad Pin Indicators -->
       <div class="flex gap-4 my-2">
         <span class="w-3 h-3 rounded-full bg-slate-800 border border-slate-700" id="dotPin_1"></span>
         <span class="w-3 h-3 rounded-full bg-slate-800 border border-slate-700" id="dotPin_2"></span>
@@ -133,7 +132,6 @@
         <span class="w-3 h-3 rounded-full bg-slate-800 border border-slate-700" id="dotPin_4"></span>
       </div>
 
-      <!-- Glove-Friendly Industrial Tactile Keypad -->
       <div class="grid grid-cols-3 gap-2 w-full">
         <button onclick="typePinDigit('1')" class="bg-slate-800 text-xl font-bold py-3 rounded-xl active:bg-slate-700">1</button>
         <button onclick="typePinDigit('2')" class="bg-slate-800 text-xl font-bold py-3 rounded-xl active:bg-slate-700">2</button>
@@ -151,13 +149,11 @@
     </div>
   </div>
 
-  <!-- PRIMARY APP LAYOUT -->
   <main class="w-full max-w-md mx-auto p-4 flex-1 flex flex-col justify-start gap-4">
     
-    <!-- APPLICATION TOP HEADER BRANDING -->
     <header class="flex items-center justify-between border-b border-slate-850 pb-3">
       <div class="flex items-center gap-2.5">
-        <div class="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center font-black text-xs text-white">AB</div>
+        <img src="abnlogo.png" alt="ABN Logo" class="w-8 h-8 object-contain rounded-lg">
         <div>
           <h1 class="text-sm font-black uppercase tracking-wider text-slate-100">AB Nutribev</h1>
           <p class="text-[9px] text-blue-400 font-extrabold uppercase tracking-widest">Plant Steam Monitor</p>
@@ -169,40 +165,56 @@
       </div>
     </header>
 
-    <!-- VIEW 1: HOME PAGE (DEFAULT) -->
     <section id="pageHome" class="view-page active space-y-4">
       
-      <!-- BOILER A iOS WIDGET CARD -->
-      <div id="cardBoilerA" class="rounded-[32px] p-6 shadow-xl flex flex-col justify-between h-48 border transition-all duration-300">
+      <div id="cardBoilerA" class="rounded-[32px] p-5 shadow-xl flex flex-col justify-between h-56 border transition-all duration-300">
         <div class="flex justify-between items-start">
-          <span class="text-xs font-black opacity-80 uppercase tracking-widest">PV</span>
+          <span class="text-xs font-black opacity-80 uppercase tracking-widest">PV STEAM</span>
           <span id="labelModeBoilerA" class="text-[10px] font-black px-3 py-1 rounded-full bg-black/20 uppercase tracking-wider">STANDBY</span>
         </div>
-        <div class="text-center my-auto">
-          <span id="valuePvBoilerA" class="text-5xl font-digital block">0.0</span>
+        <div class="grid grid-cols-2 gap-2 my-auto items-center">
+          <div class="text-center border-r border-white/10">
+            <span id="valuePvBoilerA" class="text-4xl font-digital block">0.0</span>
+            <span class="text-[9px] font-bold tracking-wider text-slate-300 uppercase">BAR</span>
+          </div>
+          <div class="text-center">
+            <span id="valueTempPvBoilerA" class="text-4xl font-digital text-amber-400 block">0</span>
+            <span class="text-[9px] font-bold tracking-wider text-amber-300 uppercase">FURNACE °C</span>
+          </div>
         </div>
-        <div class="flex justify-between items-end">
+        <div class="flex justify-between items-end border-t border-white/5 pt-2">
           <span class="text-xs font-black tracking-widest uppercase opacity-90">BOILER A</span>
-          <span id="labelSvBoilerA" class="text-[9px] font-bold opacity-60">SV: 0.0</span>
+          <div class="flex gap-3 text-[9px] font-bold opacity-70">
+            <span id="labelSvBoilerA">SV: 0.0 BAR</span>
+            <span id="labelTempSvBoilerA" class="text-amber-400">SV: 0°C</span>
+          </div>
         </div>
       </div>
 
-      <!-- BOILER B iOS WIDGET CARD -->
-      <div id="cardBoilerB" class="rounded-[32px] p-6 shadow-xl flex flex-col justify-between h-48 border transition-all duration-300">
+      <div id="cardBoilerB" class="rounded-[32px] p-5 shadow-xl flex flex-col justify-between h-56 border transition-all duration-300">
         <div class="flex justify-between items-start">
-          <span class="text-xs font-black opacity-80 uppercase tracking-widest">PV</span>
+          <span class="text-xs font-black opacity-80 uppercase tracking-widest">PV STEAM</span>
           <span id="labelModeBoilerB" class="text-[10px] font-black px-3 py-1 rounded-full bg-black/20 uppercase tracking-wider">STANDBY</span>
         </div>
-        <div class="text-center my-auto">
-          <span id="valuePvBoilerB" class="text-5xl font-digital block">0.0</span>
+        <div class="grid grid-cols-2 gap-2 my-auto items-center">
+          <div class="text-center border-r border-white/10">
+            <span id="valuePvBoilerB" class="text-4xl font-digital block">0.0</span>
+            <span class="text-[9px] font-bold tracking-wider text-slate-300 uppercase">BAR</span>
+          </div>
+          <div class="text-center">
+            <span id="valueTempPvBoilerB" class="text-4xl font-digital text-amber-400 block">0</span>
+            <span class="text-[9px] font-bold tracking-wider text-amber-300 uppercase">FURNACE °C</span>
+          </div>
         </div>
-        <div class="flex justify-between items-end">
+        <div class="flex justify-between items-end border-t border-white/5 pt-2">
           <span class="text-xs font-black tracking-widest uppercase opacity-90">BOILER B</span>
-          <span id="labelSvBoilerB" class="text-[9px] font-bold opacity-60">SV: 0.0</span>
+          <div class="flex gap-3 text-[9px] font-bold opacity-70">
+            <span id="labelSvBoilerB">SV: 0.0 BAR</span>
+            <span id="labelTempSvBoilerB" class="text-amber-400">SV: 0°C</span>
+          </div>
         </div>
       </div>
 
-      <!-- CSG UTILITY iOS WIDGET CARD -->
       <div id="cardCSG" class="rounded-[32px] p-6 shadow-xl flex flex-col justify-between h-48 border transition-all duration-300">
         <div class="flex justify-between items-start">
           <span class="text-xs font-black opacity-80 uppercase tracking-widest">PV</span>
@@ -219,7 +231,6 @@
 
     </section>
 
-    <!-- VIEW 2: OPERATOR INPUT PAGE -->
     <section id="pageOperatorInput" class="view-page space-y-4">
       <div class="border-b border-slate-800 pb-2 flex justify-between items-center">
         <div>
@@ -229,28 +240,33 @@
         <button onclick="resetOperatorStation()" class="h-8 px-2.5 bg-slate-900 border border-slate-800 rounded-xl text-[9px] font-black uppercase tracking-wider text-slate-400">Change Station</button>
       </div>
 
-      <!-- MANDATORY OPERATOR NAME FIELD -->
       <div class="bg-[#111C2E] border border-slate-800 rounded-2xl p-4">
         <label class="text-[10px] font-extrabold uppercase tracking-widest text-slate-400 block mb-1.5">Enter Operator's Name</label>
         <input type="text" id="inputOperatorName" placeholder="E.G. JUAN DELA CRUZ" class="w-full bg-[#162235] border-2 border-dashed border-slate-700 rounded-xl px-4 text-xs font-bold tracking-wide uppercase text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 transition-all">
       </div>
 
-      <!-- BOILER ENTRY FORM -->
       <div id="formContainerBoiler" class="hidden space-y-4">
         
-        <!-- Boiler A Configurator -->
         <div class="bg-[#111C2E] p-4 rounded-3xl border border-slate-800 space-y-3">
-          <div class="flex justify-between items-center">
-            <span class="text-xs font-black text-blue-400 uppercase tracking-widest">Boiler A Config</span>
-          </div>
+          <span class="text-xs font-black text-blue-400 uppercase tracking-widest block">Boiler A Config</span>
           <div class="grid grid-cols-2 gap-2">
             <div>
-              <label class="text-[9px] font-bold text-slate-400 uppercase tracking-wider block mb-1">PV Input (Bar)</label>
+              <label class="text-[9px] font-bold text-slate-400 uppercase tracking-wider block mb-1">PV Pressure (Bar)</label>
               <input type="number" id="formA_pv" step="0.1" placeholder="E.G. 8.4" class="w-full rounded-xl px-3 text-sm font-bold text-white">
             </div>
             <div>
               <label class="text-[9px] font-bold text-slate-400 uppercase tracking-wider block mb-1">SV Target (Bar)</label>
               <input type="number" id="formA_sv" step="0.1" placeholder="E.G. 8.0" class="w-full rounded-xl px-3 text-sm font-bold text-white">
+            </div>
+          </div>
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label class="text-[9px] font-bold text-amber-400 uppercase tracking-wider block mb-1">PV Furnace Temp (°C)</label>
+              <input type="number" id="formA_temp_pv" placeholder="E.G. 740" class="w-full rounded-xl px-3 text-sm font-bold text-white">
+            </div>
+            <div>
+              <label class="text-[9px] font-bold text-amber-400 uppercase tracking-wider block mb-1">SV Furnace Temp (°C)</label>
+              <input type="number" id="formA_temp_sv" placeholder="E.G. 750" class="w-full rounded-xl px-3 text-sm font-bold text-white">
             </div>
           </div>
           <div>
@@ -263,19 +279,26 @@
           </div>
         </div>
 
-        <!-- Boiler B Configurator -->
         <div class="bg-[#111C2E] p-4 rounded-3xl border border-slate-800 space-y-3">
-          <div class="flex justify-between items-center">
-            <span class="text-xs font-black text-emerald-400 uppercase tracking-widest">Boiler B Config</span>
-          </div>
+          <span class="text-xs font-black text-emerald-400 uppercase tracking-widest block">Boiler B Config</span>
           <div class="grid grid-cols-2 gap-2">
             <div>
-              <label class="text-[9px] font-bold text-slate-400 uppercase tracking-wider block mb-1">PV Input (Bar)</label>
+              <label class="text-[9px] font-bold text-slate-400 uppercase tracking-wider block mb-1">PV Pressure (Bar)</label>
               <input type="number" id="formB_pv" step="0.1" placeholder="E.G. 8.4" class="w-full rounded-xl px-3 text-sm font-bold text-white">
             </div>
             <div>
               <label class="text-[9px] font-bold text-slate-400 uppercase tracking-wider block mb-1">SV Target (Bar)</label>
               <input type="number" id="formB_sv" step="0.1" placeholder="E.G. 8.0" class="w-full rounded-xl px-3 text-sm font-bold text-white">
+            </div>
+          </div>
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label class="text-[9px] font-bold text-amber-400 uppercase tracking-wider block mb-1">PV Furnace Temp (°C)</label>
+              <input type="number" id="formB_temp_pv" placeholder="E.G. 740" class="w-full rounded-xl px-3 text-sm font-bold text-white">
+            </div>
+            <div>
+              <label class="text-[9px] font-bold text-amber-400 uppercase tracking-wider block mb-1">SV Furnace Temp (°C)</label>
+              <input type="number" id="formB_temp_sv" placeholder="E.G. 750" class="w-full rounded-xl px-3 text-sm font-bold text-white">
             </div>
           </div>
           <div>
@@ -291,12 +314,9 @@
         <button onclick="submitBoilerDataToSupabase()" id="btnSaveBoiler" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-black text-xs uppercase tracking-widest rounded-2xl shadow-lg transition-all">Save Boiler Data</button>
       </div>
 
-      <!-- CSG ENTRY FORM -->
       <div id="formContainerCSG" class="hidden space-y-4">
-        
         <div class="bg-[#111C2E] p-4 rounded-3xl border border-slate-800 space-y-3">
           <span class="text-xs font-black text-purple-400 uppercase tracking-widest block">Generator Matrix Control</span>
-          
           <div class="grid grid-cols-2 gap-2">
             <div>
               <label class="text-[9px] font-bold text-slate-400 uppercase tracking-wider block mb-1">PV Input (Bar)</label>
@@ -307,7 +327,6 @@
               <input type="number" id="formCSG_sv" step="0.1" placeholder="E.G. 4.5" class="w-full rounded-xl px-3 text-sm font-bold text-white">
             </div>
           </div>
-
           <div class="grid grid-cols-2 gap-2">
             <div>
               <label class="text-[9px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Plant Selector</label>
@@ -319,11 +338,9 @@
             <div>
               <label class="text-[9px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Product Selector</label>
               <select id="formCSG_product" class="w-full rounded-xl px-2 text-xs font-bold text-white">
-                <!-- Dynamically populated options -->
-              </select>
+                </select>
             </div>
           </div>
-
           <div>
             <label class="text-[9px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Steam Mode</label>
             <select id="formCSG_steamMode" class="w-full rounded-xl px-2 text-xs font-bold text-white">
@@ -332,13 +349,11 @@
             </select>
           </div>
         </div>
-
         <button onclick="submitCsgDataToSupabase()" id="btnSaveCsg" class="w-full bg-purple-600 hover:bg-purple-500 text-white font-black text-xs uppercase tracking-widest rounded-2xl shadow-lg transition-all">Save CSG Data</button>
       </div>
 
     </section>
 
-    <!-- VIEW 3: HISTORY LOGS PAGE -->
     <section id="pageHistory" class="view-page space-y-4">
       <div class="border-b border-slate-800 pb-2 flex justify-between items-end">
         <div>
@@ -350,24 +365,18 @@
         </button>
       </div>
 
-      <!-- Quick Search & Filter tools -->
       <div class="grid grid-cols-2 gap-2 bg-[#111C2E] p-2 rounded-2xl border border-slate-800">
         <input type="text" id="historySearch" oninput="applyHistoryFilters()" placeholder="🔍 SEARCH..." class="w-full h-11 bg-[#162235] border border-slate-700 rounded-xl px-3 text-xs font-bold text-white focus:outline-none placeholder-slate-500">
         <input type="date" id="historyDate" onchange="applyHistoryFilters()" class="w-full h-11 bg-[#162235] border border-slate-700 rounded-xl px-3 text-xs font-bold text-white focus:outline-none">
       </div>
 
-      <!-- History Scannable Mobile Rows Container -->
       <div id="historyLogsContainer" class="space-y-2.5 max-h-[55vh] overflow-y-auto pr-1">
-        <!-- Records loaded dynamically -->
-      </div>
+        </div>
     </section>
 
   </main>
 
-  <!-- FIXED BOTTOM NAVIGATION SYSTEM (GLOVE FRIENDLY) -->
   <nav class="fixed bottom-0 left-0 right-0 h-20 bg-[#0B1220]/95 backdrop-blur-xl border-t border-slate-800/80 px-6 flex items-center justify-between z-[900]">
-    
-    <!-- Operator Input (LEFT) -->
     <button onclick="onTapOperatorInputTab()" id="tabOperator" class="flex flex-col items-center justify-center gap-1 text-slate-500 transition-all flex-1">
       <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"></path>
@@ -375,7 +384,6 @@
       <span class="text-[9px] font-extrabold uppercase tracking-widest">Operator Input</span>
     </button>
     
-    <!-- Home (CENTER) -->
     <button onclick="switchView('pageHome')" id="tabHome" class="flex flex-col items-center justify-center gap-1 text-blue-500 transition-all flex-1 -translate-y-1">
       <div class="p-3 bg-blue-500/10 border border-blue-500/20 rounded-2xl shadow-inner">
         <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
@@ -383,20 +391,16 @@
         </svg>
       </div>
     </button>
-    
-    <!-- History Logs (RIGHT) -->
+ 
     <button onclick="switchView('pageHistory')" id="tabHistory" class="flex flex-col items-center justify-center gap-1 text-slate-500 transition-all flex-1">
       <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"></path>
       </svg>
       <span class="text-[9px] font-extrabold uppercase tracking-widest">History Logs</span>
     </button>
-
   </nav>
 
-  <!-- CONTROLLER SCRIPT (SUPABASE INTEGRATION + LOCAL LOGS STORAGE) -->
   <script>
-    // Supabase DB Credentials
     const SB_URL = "https://qbeacrpoyfacgmbzxjcu.supabase.co";
     const SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFiZWFjcnBveWZhY2dtYnp4amN1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDg2NTM5NTIsImV4cCI6MjA2NDIyOTk1Mn0.6kfxKLJxidW4BcqsMJte61AtzydrTW-1ZJIJytiUBt4";
     const headers = { 
@@ -405,56 +409,45 @@
       "Content-Type": "application/json" 
     };
 
-    // Card Colors Lookup Mapping
     const colorThemes = {
-      MAIN: { bg: "#064e3b", border: "#10b981", text: "#34d399", statusText: "#10b981" },
-      BACKUP: { bg: "#78350f", border: "#fbbf24", text: "#fbbf24", statusText: "#fbbf24" },
-      STANDBY: { bg: "#7f1d1d", border: "#ef4444", text: "#f87171", statusText: "#f87171" },
-      VITAMILK: { bg: "#064e3b", border: "#10b981", text: "#34d399", statusText: "#10b981" },
-      PASCUAL: { bg: "#7f1d1d", border: "#ef4444", text: "#f87171", statusText: "#f87171" }
+      MAIN: { bg: "#064e3b", border: "#10b981", text: "#34d399" },
+      BACKUP: { bg: "#78350f", border: "#fbbf24", text: "#fbbf24" },
+      STANDBY: { bg: "#7f1d1d", border: "#ef4444", text: "#f87171" },
+      VITAMILK: { bg: "#064e3b", border: "#10b981", text: "#34d399" },
+      PASCUAL: { bg: "#7f1d1d", border: "#ef4444", text: "#f87171" }
     };
 
-    // State Variables
-    let selectedFormStation = ""; // "Boiler Station" or "CSG Station"
+    let selectedFormStation = "";
     let currentPinInput = "";
     let activePoller = null;
     let localHistoryLogs = [];
 
-    // On DOM Load Bootstrap
     window.addEventListener("DOMContentLoaded", () => {
-      // Hydrate local history database
       const storedHistory = localStorage.getItem("abn_steam_local_history");
       if (storedHistory) {
         localHistoryLogs = JSON.parse(storedHistory);
       } else {
-        // Initial Mock Data
         localHistoryLogs = [
-          { date: "2026-06-04", time: "14:15:22", station: "Boiler Station", pv: "8.4", sv: "8.0", mode: "MAIN", product: "—", operator: "M. REYES" },
-          { date: "2026-06-04", time: "13:02:10", station: "CSG Station", pv: "4.20", sv: "4.5", mode: "4 BARS", product: "VMR", operator: "A. SANTOS" }
+          { date: "2026-06-04", time: "14:15:22", station: "Boiler Station", pv: "8.4", sv: "8.0", temp_pv: 740, temp_sv: 750, mode: "MAIN", product: "—", operator: "M. REYES" },
+          { date: "2026-06-04", time: "13:02:10", station: "CSG Station", pv: "4.20", sv: "4.5", temp_pv: 0, temp_sv: 0, mode: "4 BARS", product: "VMR", operator: "A. SANTOS" }
         ];
         saveLocalLogs();
       }
       
-      // Load saved Operator Name
       const savedOperator = localStorage.getItem("abn_operator_name");
       if (savedOperator) {
         document.getElementById('inputOperatorName').value = savedOperator;
       }
 
-      // Initial Fetch & Long Polling activation
       fetchSupabaseState();
       activePoller = setInterval(fetchSupabaseState, 4000);
-      
-      // Build History Layout
       renderHistoryLogs(localHistoryLogs);
     });
 
-    // Save and Sync state
     function saveLocalLogs() {
       localStorage.setItem("abn_steam_local_history", JSON.stringify(localHistoryLogs));
     }
 
-    // View Switching Router
     function switchView(targetId) {
       document.querySelectorAll(".view-page").forEach(page => {
         page.classList.remove("active");
@@ -467,16 +460,13 @@
         setTimeout(() => pageEl.classList.add("active"), 50);
       }, 150);
 
-      // Highlight corresponding Nav Menu
       const tabs = { pageHome: "tabHome", pageOperatorInput: "tabOperator", pageHistory: "tabHistory" };
       Object.keys(tabs).forEach(pKey => {
         const tabBtn = document.getElementById(tabs[pKey]);
         if (pKey === targetId) {
           tabBtn.classList.remove("text-slate-500");
           tabBtn.classList.add("text-blue-500");
-          if (pKey !== "pageHome") {
-            tabBtn.classList.add("-translate-y-1");
-          }
+          if (pKey !== "pageHome") tabBtn.classList.add("-translate-y-1");
         } else {
           tabBtn.classList.remove("text-blue-500", "-translate-y-1");
           tabBtn.classList.add("text-slate-500");
@@ -484,41 +474,24 @@
       });
     }
 
-    // Operator tab triggers Station selector modal
-    function onTapOperatorInputTab() {
-      openModal("stationSelectorModal");
-    }
+    function onTapOperatorInputTab() { openModal("stationSelectorModal"); }
+    function openModal(id) { document.getElementById(id).classList.remove("hidden"); }
+    function closeModal(id) { document.getElementById(id).classList.add("hidden"); }
 
-    // Open Modal Utility
-    function openModal(id) {
-      document.getElementById(id).classList.remove("hidden");
-    }
-
-    // Close Modal Utility
-    function closeModal(id) {
-      document.getElementById(id).classList.add("hidden");
-    }
-
-    // Modal Routing Action
     function selectStationRoute(stationName) {
       selectedFormStation = stationName;
       closeModal("stationSelectorModal");
-      
-      // Set Pin Header title
       document.getElementById("pinModalTargetTitle").innerText = `${stationName} Pin Entry`;
       clearPinBuffer();
       openModal("pinGatewayModal");
     }
 
-    // Keyboard Input Verification Logic
     function typePinDigit(digit) {
       if (currentPinInput.length < 4) {
         currentPinInput += digit;
         syncPinIndicatorDots();
       }
-      if (currentPinInput.length === 4) {
-        verifySecurityPin();
-      }
+      if (currentPinInput.length === 4) { verifySecurityPin(); }
     }
 
     function clearPinBuffer() {
@@ -548,7 +521,6 @@
       }
     }
 
-    // Open Form Configuration UI
     function openSelectedForm() {
       document.getElementById("formContainerBoiler").classList.add("hidden");
       document.getElementById("formContainerCSG").classList.add("hidden");
@@ -564,58 +536,40 @@
         document.getElementById("inputFormSubtitle").innerText = "Configure Clean Steam parameters";
         hydrateCsgFields();
       }
-      
       switchView("pageOperatorInput");
     }
 
-    function resetOperatorStation() {
-      openModal("stationSelectorModal");
-    }
+    function resetOperatorStation() { openModal("stationSelectorModal"); }
 
-    // CSG Dependent Logic Engine
     function applyCsgProductConstraint() {
       const selectedPlant = document.getElementById("formCSG_plant").value;
       const productSelect = document.getElementById("formCSG_product");
       productSelect.innerHTML = "";
-
-      let items = [];
-      if (selectedPlant === "VITAMILK") {
-        items = ["VMR", "VMD", "VMB", "VMS", "VMU", "VMC"];
-      } else {
-        items = ["AMD"];
-      }
-
+      let items = selectedPlant === "VITAMILK" ? ["VMR", "VMD", "VMB", "VMS", "VMU", "VMC"] : ["AMD"];
       items.forEach(item => {
         const opt = document.createElement("option");
-        opt.value = item;
-        opt.innerText = item;
+        opt.value = item; opt.innerText = item;
         productSelect.appendChild(opt);
       });
     }
 
-    // Pull Current State From Supabase Table
     async function fetchSupabaseState() {
       try {
-        const response = await fetch(`${SB_URL}/rest/v1/boiler_status?order=id.asc`, {
-          method: "GET",
-          headers: headers
-        });
+        const response = await fetch(`${SB_URL}/rest/v1/boiler_status?order=id.asc`, { method: "GET", headers: headers });
         if (!response.ok) throw new Error("Sync Interrupted");
-        
         const data = await response.json();
         
         data.forEach(node => {
           if (node.id === "boiler_a") {
-            updateDashboardCard("cardBoilerA", "valuePvBoilerA", "labelModeBoilerA", "labelSvBoilerA", node.pres_pv, node.pres_sv, node.role, false);
+            updateDashboardCard("cardBoilerA", "valuePvBoilerA", "labelModeBoilerA", "labelSvBoilerA", node.pres_pv, node.pres_sv, node.role, false, "", "valueTempPvBoilerA", "labelTempSvBoilerA", node.temp_pv, node.temp_sv);
           }
           if (node.id === "boiler_b") {
-            updateDashboardCard("cardBoilerB", "valuePvBoilerB", "labelModeBoilerB", "labelSvBoilerB", node.pres_pv, node.pres_sv, node.role, false);
+            updateDashboardCard("cardBoilerB", "valuePvBoilerB", "labelModeBoilerB", "labelSvBoilerB", node.pres_pv, node.pres_sv, node.role, false, "", "valueTempPvBoilerB", "labelTempSvBoilerB", node.temp_pv, node.temp_sv);
           }
           if (node.id === "csg") {
             updateDashboardCard("cardCSG", "valuePvCSG", "labelPlantCSG", "labelSvCSG", node.pres_pv, node.pres_sv, node.role, true, node.product_name);
           }
         });
-
         document.getElementById("liveTelemetryIndicator").className = "flex items-center gap-1.5 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 px-2.5 py-1 rounded-full text-[9px] font-bold";
         document.getElementById("liveTelemetryIndicator").querySelector("span:nth-child(2)").innerText = "Supabase Connected";
       } catch (err) {
@@ -624,31 +578,27 @@
       }
     }
 
-    // Refresh display details helper with direct color logic
-    function updateDashboardCard(cardId, pvId, modeId, svId, pv, sv, roleOrPlant, isCSG, product = "") {
+    function updateDashboardCard(cardId, pvId, modeId, svId, pv, sv, roleOrPlant, isCSG, product = "", tempPvId = "", tempSvId = "", tempPv = 0, tempSv = 0) {
       const card = document.getElementById(cardId);
       const pvVal = parseFloat(pv) || 0;
       const svVal = parseFloat(sv) || 0;
-
-      // Render Number Telemetry
+      
       document.getElementById(pvId).innerText = isCSG ? pvVal.toFixed(2) : pvVal.toFixed(1);
-      document.getElementById(svId).innerText = `SV: ${svVal.toFixed(1)}`;
-
+      
       if (isCSG) {
-        // CSG Brand and Product Allocation Layout
-        document.getElementById(modeId).innerText = roleOrPlant; // Show VITAMILK or PASCUAL
+        document.getElementById(svId).innerText = `SV: ${svVal.toFixed(1)}`;
+        document.getElementById(modeId).innerText = roleOrPlant;
         document.getElementById("labelProductCSG").innerText = product;
-
-        // Apply Card Colors
         const color = colorThemes[roleOrPlant] || colorThemes.VITAMILK;
         card.style.backgroundColor = color.bg;
         card.style.borderColor = color.border;
         card.style.color = color.text;
       } else {
-        // Boiler layout
+        document.getElementById(svId).innerText = `SV: ${svVal.toFixed(1)} BAR`;
+        document.getElementById(tempPvId).innerText = parseInt(tempPv) || 0;
+        document.getElementById(tempSvId).innerText = `SV: ${parseInt(tempSv) || 0}°C`;
+        
         document.getElementById(modeId).innerText = roleOrPlant;
-
-        // Apply Card Colors based on Boiler Modes: MAIN, BACKUP, STANDBY
         const color = colorThemes[roleOrPlant] || colorThemes.STANDBY;
         card.style.backgroundColor = color.bg;
         card.style.borderColor = color.border;
@@ -656,7 +606,6 @@
       }
     }
 
-    // Populate Fields with current values
     async function hydrateBoilerFields() {
       try {
         const response = await fetch(`${SB_URL}/rest/v1/boiler_status?order=id.asc`, { method: "GET", headers: headers });
@@ -665,11 +614,15 @@
           if (node.id === "boiler_a") {
             document.getElementById("formA_pv").value = node.pres_pv;
             document.getElementById("formA_sv").value = node.pres_sv;
+            document.getElementById("formA_temp_pv").value = node.temp_pv;
+            document.getElementById("formA_temp_sv").value = node.temp_sv;
             document.getElementById("formA_mode").value = node.role;
           }
           if (node.id === "boiler_b") {
             document.getElementById("formB_pv").value = node.pres_pv;
             document.getElementById("formB_sv").value = node.pres_sv;
+            document.getElementById("formB_temp_pv").value = node.temp_pv;
+            document.getElementById("formB_temp_sv").value = node.temp_sv;
             document.getElementById("formB_mode").value = node.role;
           }
         });
@@ -684,7 +637,7 @@
           const node = data[0];
           document.getElementById("formCSG_pv").value = node.pres_pv;
           document.getElementById("formCSG_sv").value = node.pres_sv;
-          document.getElementById("formCSG_plant").value = node.role; // VITAMILK or PASCUAL is stored in role
+          document.getElementById("formCSG_plant").value = node.role;
           applyCsgProductConstraint();
           document.getElementById("formCSG_product").value = node.product_name;
           document.getElementById("formCSG_steamMode").value = node.steam_mode || "4 BARS";
@@ -692,18 +645,13 @@
       } catch (err) {}
     }
 
-    // Validation helper
     function getOperatorName() {
       const name = document.getElementById("inputOperatorName").value.trim().toUpperCase();
-      if (!name) {
-        triggerErrorToast("Operator Name required to save logs.");
-        return null;
-      }
+      if (!name) { triggerErrorToast("Operator Name required to save logs."); return null; }
       localStorage.setItem("abn_operator_name", name);
       return name;
     }
 
-    // Write to DB - BOILER DATA
     async function submitBoilerDataToSupabase() {
       const opName = getOperatorName();
       if (!opName) return;
@@ -712,41 +660,23 @@
       if (btn.disabled) return;
       btn.disabled = true;
 
-      // Extract Inputs
       const aPv = parseFloat(document.getElementById("formA_pv").value) || 0;
       const aSv = parseFloat(document.getElementById("formA_sv").value) || 0;
+      const aTempPv = parseInt(document.getElementById("formA_temp_pv").value) || 0;
+      const aTempSv = parseInt(document.getElementById("formA_temp_sv").value) || 0;
       const aMode = document.getElementById("formA_mode").value;
 
       const bPv = parseFloat(document.getElementById("formB_pv").value) || 0;
       const bSv = parseFloat(document.getElementById("formB_sv").value) || 0;
+      const bTempPv = parseInt(document.getElementById("formB_temp_pv").value) || 0;
+      const bTempSv = parseInt(document.getElementById("formB_temp_sv").value) || 0;
       const bMode = document.getElementById("formB_mode").value;
 
-      // Display Overlay
       showLoadingOverlay("Sending Boiler Logs", "Saving metrics directly to active Supabase database nodes...");
 
       const payload = [
-        {
-          id: "boiler_a",
-          boiler_name: "Boiler A",
-          role: aMode,
-          pres_pv: aPv,
-          pres_sv: aSv,
-          temp_pv: 740,
-          temp_sv: 750,
-          operator_name: opName,
-          updated_at: new Date().toISOString()
-        },
-        {
-          id: "boiler_b",
-          boiler_name: "Boiler B",
-          role: bMode,
-          pres_pv: bPv,
-          pres_sv: bSv,
-          temp_pv: 740,
-          temp_sv: 750,
-          operator_name: opName,
-          updated_at: new Date().toISOString()
-        }
+        { id: "boiler_a", boiler_name: "Boiler A", role: aMode, pres_pv: aPv, pres_sv: aSv, temp_pv: aTempPv, temp_sv: aTempSv, operator_name: opName, updated_at: new Date().toISOString() },
+        { id: "boiler_b", boiler_name: "Boiler B", role: bMode, pres_pv: bPv, pres_sv: bSv, temp_pv: bTempPv, temp_sv: bTempSv, operator_name: opName, updated_at: new Date().toISOString() }
       ];
 
       try {
@@ -755,26 +685,18 @@
           headers: { ...headers, "Prefer": "resolution=merge-duplicates" },
           body: JSON.stringify(payload)
         });
-
         if (response.ok) {
-          // Write successfully into real-time variables & local storage History logs
-          addLogToHistory("Boiler Station", aPv, aSv, aMode, "—", opName);
-          addLogToHistory("Boiler Station", bPv, bSv, bMode, "—", opName);
-          
+          addLogToHistory("Boiler Station - A", aPv, aSv, aMode, "—", opName, aTempPv, aTempSv);
+          addLogToHistory("Boiler Station - B", bPv, bSv, bMode, "—", opName, bTempPv, bTempSv);
           await fetchSupabaseState();
           triggerSuccessAnimation();
-        } else {
-          throw new Error("Log Rejection");
-        }
+        } else { throw new Error("Log Rejection"); }
       } catch (err) {
         hideLoadingOverlay();
         triggerErrorToast("Failed to connect with Supabase. Check operational connection.");
-      } finally {
-        btn.disabled = false;
-      }
+      } finally { btn.disabled = false; }
     }
 
-    // Write to DB - CSG DATA
     async function submitCsgDataToSupabase() {
       const opName = getOperatorName();
       if (!opName) return;
@@ -792,17 +714,7 @@
       showLoadingOverlay("Saving CSG Logs", "Syncing Clean Steam parameters with active Supabase nodes...");
 
       const payload = [
-        {
-          id: "csg",
-          boiler_name: "Clean Steam Generator",
-          role: plant,
-          pres_pv: pv,
-          pres_sv: sv,
-          operator_name: opName,
-          product_name: product,
-          steam_mode: mode,
-          updated_at: new Date().toISOString()
-        }
+        { id: "csg", boiler_name: "Clean Steam Generator", role: plant, pres_pv: pv, pres_sv: sv, temp_pv: 0, temp_sv: 0, operator_name: opName, product_name: product, steam_mode: mode, updated_at: new Date().toISOString() }
       ];
 
       try {
@@ -811,58 +723,48 @@
           headers: { ...headers, "Prefer": "resolution=merge-duplicates" },
           body: JSON.stringify(payload)
         });
-
         if (response.ok) {
-          // Commit into history
-          addLogToHistory("CSG Station", pv, sv, mode, product, opName);
-          
+          addLogToHistory("CSG Station", pv, sv, mode, product, opName, 0, 0);
           await fetchSupabaseState();
           triggerSuccessAnimation();
-        } else {
-          throw new Error("Write Error");
-        }
+        } else { throw new Error("Write Error"); }
       } catch (err) {
         hideLoadingOverlay();
         triggerErrorToast("Transaction failed. Check network operational limits.");
-      } finally {
-        btn.disabled = false;
-      }
+      } finally { btn.disabled = false; }
     }
 
-    // Write persistent local history logs records
-    function addLogToHistory(station, pv, sv, mode, product, operator) {
+    function addLogToHistory(station, pv, sv, mode, product, operator, temp_pv = 0, temp_sv = 0) {
       const date = new Date();
       const row = {
         date: date.toISOString().split('T')[0],
         time: date.toTimeString().split(' ')[0],
         station: station,
-        pv: pv,
-        sv: sv,
-        mode: mode,
-        product: product,
-        operator: operator
+        pv: pv, sv: sv, temp_pv: temp_pv, temp_sv: temp_sv,
+        mode: mode, product: product, operator: operator
       };
-      localHistoryLogs.unshift(row); // Latest First
+      localHistoryLogs.unshift(row);
       saveLocalLogs();
       renderHistoryLogs(localHistoryLogs);
     }
 
-    // Render Scannable Table logs cards
     function renderHistoryLogs(logs) {
       const container = document.getElementById("historyLogsContainer");
       container.innerHTML = "";
-
       if (logs.length === 0) {
-        container.innerHTML = `
-          <div class="text-center text-slate-500 py-8 text-xs font-bold uppercase tracking-widest">
-            No Records Logged on this System
-          </div>`;
+        container.innerHTML = `<div class="text-center text-slate-500 py-8 text-xs font-bold uppercase tracking-widest">No Records Logged on this System</div>`;
         return;
       }
 
       logs.forEach(log => {
         const card = document.createElement("div");
         card.className = "bg-[#111C2E] border border-slate-800 p-4 rounded-3xl flex flex-col gap-2 shadow-sm";
+        
+        let tempDisplay = "";
+        if(log.station.includes("Boiler")) {
+          tempDisplay = `<span class="text-[10px] font-bold text-amber-400 block font-mono">Temp PV: ${log.temp_pv}°C / SV: ${log.temp_sv}°C</span>`;
+        }
+
         card.innerHTML = `
           <div class="flex justify-between items-start">
             <div>
@@ -870,7 +772,8 @@
               <span class="text-[9px] font-bold text-slate-500 font-mono">${log.date} @ ${log.time}</span>
             </div>
             <div class="text-right">
-              <span class="text-xs font-bold text-blue-400 font-digital block">PV: ${log.pv} / SV: ${log.sv}</span>
+              <span class="text-xs font-bold text-blue-400 font-digital block">Pres PV: ${log.pv} / SV: ${log.sv}</span>
+              ${tempDisplay}
               <span class="text-[8px] font-extrabold text-slate-400 tracking-wider block uppercase mt-0.5">OP: ${log.operator}</span>
             </div>
           </div>
@@ -883,59 +786,43 @@
       });
     }
 
-    // Filters implementation
     function applyHistoryFilters() {
       const search = document.getElementById("historySearch").value.toUpperCase();
       const filterDate = document.getElementById("historyDate").value;
-
       const filtered = localHistoryLogs.filter(log => {
         const matchesSearch = log.station.toUpperCase().includes(search) || log.operator.toUpperCase().includes(search) || log.product.toUpperCase().includes(search);
         const matchesDate = !filterDate || log.date === filterDate;
         return matchesSearch && matchesDate;
       });
-
       renderHistoryLogs(filtered);
     }
 
-    // Success Screen transition trigger
     function triggerSuccessAnimation() {
       hideLoadingOverlay();
       const success = document.getElementById("successAnimation");
       success.classList.remove("hidden");
-      setTimeout(() => {
-        success.classList.add("hidden");
-        switchView("pageHome");
-      }, 1500);
+      setTimeout(() => { success.classList.add("hidden"); switchView("pageHome"); }, 1500);
     }
 
-    // Loader Helper
     function showLoadingOverlay(title, subtitle) {
       document.getElementById("loadingTitle").innerText = title;
       document.getElementById("loadingSubtitle").innerText = subtitle;
       document.getElementById("loadingOverlay").classList.remove("hidden");
     }
+    function hideLoadingOverlay() { document.getElementById("loadingOverlay").classList.add("hidden"); }
 
-    function hideLoadingOverlay() {
-      document.getElementById("loadingOverlay").classList.add("hidden");
-    }
-
-    // Error message helper
     function triggerErrorToast(msg) {
       const toast = document.getElementById("toastNotification");
       document.getElementById("toastMessage").innerText = msg.toUpperCase();
       toast.classList.remove("hidden");
-      setTimeout(() => {
-        toast.classList.add("hidden");
-      }, 3500);
+      setTimeout(() => { toast.classList.add("hidden"); }, 3500);
     }
 
-    // Standard Industrial CSV logs exporter
     function exportLogsToCSV() {
-      let csv = "Date,Time,Station,PV,SV,Mode,Product,Operator\n";
+      let csv = "Date,Time,Station,Pres_PV,Pres_SV,Temp_PV,Temp_SV,Mode,Product,Operator\n";
       localHistoryLogs.forEach(row => {
-        csv += `${row.date},${row.time},"${row.station}",${row.pv},${row.sv},"${row.mode}","${row.product}","${row.operator}"\n`;
+        csv += `${row.date},${row.time},"${row.station}",${row.pv},${row.sv},${row.temp_pv || 0},${row.temp_sv || 0},"${row.mode}","${row.product}","${row.operator}"\n`;
       });
-
       const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
       const link = document.createElement("a");
       link.href = URL.createObjectURL(blob);
@@ -947,5 +834,3 @@
   </script>
 </body>
 </html>
-
-
